@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Warehouse.Data.Dto
+namespace Warehouse.Data.Dto.Ambar
 {
-    public class AmbarCreateDto
+    public class AnbarCreateDto
     {
-        [Required]
         public string Name { get; set; }
         public string Place { get; set; }
         public string Type { get; set; }

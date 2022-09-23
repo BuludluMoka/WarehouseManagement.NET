@@ -1,6 +1,6 @@
-﻿namespace Warehouse.Data.Dto
+﻿namespace Warehouse.Data.Dto.Ambar
 {
-    public class AmbarUpdateDto
+    public class AnbarUpdateDto
     {
         public string? Name { get; set; }
         public string? Place { get; set; }

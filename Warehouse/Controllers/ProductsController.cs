@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,47 +17,67 @@ namespace Warehouse.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly WarehouseDbContext _context;
+        private readonly IMapper _mapper;
 
-        public ProductsController(WarehouseDbContext context)
+        public ProductsController(WarehouseDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;   
         }
 
-        // GET: api/Products
         [HttpGet]
-        public async Task< IActionResult> GetProducts()
+        public async Task<IActionResult> GetProducts()
         {
-          if (_context.Products == null)
-          {
-              return NotFound();
-          }
-            var product = (from a in _context.Products
-                         select new { a.Name, a.buyPrice, a.sellPrice,Category = a.Category.Name, a.CreatedDate, a.UpdatedDate }).ToList();
+            if (_context.Products == null)
+            {
+                return NotFound();
+            }
+            var product = await (from a in _context.Products
+                                 select new { a.Name, a.buyPrice, a.sellPrice, Category = a.Category.Name, a.CreatedDate }).ToListAsync();
             return Ok(product);
         }
 
-        // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public async Task<IActionResult> GetProductById(int id)
         {
-          if (_context.Products == null)
-          {
-              return NotFound();
-          }
-            var product = await _context.Products.FindAsync(id);
+            if (_context.Products == null)
+            {
+                return NotFound();
+            }
+            var products = await (from a in _context.Products
+                                  where a.Id == id
+                                  select new { a.Name, a.buyPrice, a.sellPrice, Category = a.Category.Name, a.CreatedDate }).ToListAsync();
 
-            if (product == null)
+            if (products.Count == 0)
             {
                 return NotFound();
             }
 
-            return product;
+            return Ok(products);
         }
 
-        // PUT: api/Products/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
+
+        [HttpPost]
+        public async Task<ActionResult<Product>> PostProduct([FromForm] ProductCreateDto model)
+        {
+
+            bool isCategoryExist = await _context.Categories.AnyAsync(x => x.Id == model.category_Id);
+            if (!isCategoryExist)
+            {
+                return NotFound();
+            }
+            Product newProduct = _mapper.Map<Product>(model);
+
+            _context.Products.Add(newProduct);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("PostProduct", new { id = newProduct.Id }, model);
+        }
+
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, ProductUpdateDto model)
+        public async Task<IActionResult> UpdateProduct(int id, ProductUpdateDto model)
         {
             Product product = await _context.Products.FindAsync(id);
             product.Name = model.Name;
@@ -92,24 +113,7 @@ namespace Warehouse.Controllers
             return NoContent();
         }
 
-        //POST: api/Products
-       [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(ProductCreateDto model)
-        {
 
-            Product newProduct = new();
-            newProduct.Name = model.Name;
-            newProduct.buyPrice = model.buyPrice;
-            newProduct.sellPrice = model.sellPrice;
-            newProduct.category_Id = model.category_Id;
-
-            _context.Products.Add(newProduct);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetProduct", new { id = newProduct.Id }, model);
-        }
-
-        // DELETE: api/Products/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {

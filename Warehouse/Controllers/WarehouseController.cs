@@ -2,66 +2,89 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Warehouse.Data.Dto;
+using Warehouse.Data.Dto.Ambar;
 using Warehouse.Data.Models;
 
 namespace Warehouse.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AmbarsController : ControllerBase
+    public class WarehouseController : ControllerBase
     {
         private readonly WarehouseDbContext _context;
+        private readonly IMapper _mapper;
 
-        public AmbarsController(WarehouseDbContext context)
+        public WarehouseController(WarehouseDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        // GET: api/Ambars
+        
         [HttpGet]
-        public IActionResult GetAmbars()
+        public async Task<IActionResult> GetWarehouses()
         {
             if (_context.Ambars == null)
             {
                 return NotFound();
             }
-
-            var ambar = (from a in _context.Ambars
-                         select new { a.Name, a.Place, a.Type, a.CreatedDate, a.UpdatedDate }).ToList();
-
-            return Ok(ambar);
+            var anbarlar = await (from x in _context.Ambars
+                           select new
+                           {
+                               x.Name,
+                               x.Place
+                              
+                           }).ToListAsync();
+            return Ok(anbarlar);
         }
 
-        // GET: api/Ambars/5
+        [HttpPost]
+        public async Task<ActionResult<Anbar>> PostWarehouse([FromForm] AnbarCreateDto anbar)
+        {
+
+            Anbar newAmbar = _mapper.Map<Anbar>(anbar);
+            _context.Ambars.Add(newAmbar);
+
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("PostWarehouse", new { id = newAmbar.Id }, anbar);
+        }
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<Ambar>> GetAmbar(int id)
+        public async Task<ActionResult> GetWarehouseById(int id)
         {
             if (_context.Ambars == null)
             {
                 return NotFound();
             }
-            var ambar = await _context.Ambars.FindAsync(id);
+            var anbar = await (from x in _context.Ambars
+                        where x.Id == id
+                        select new
+                        {
+                            x.Name,
+                            x.Place,
+                        }).ToListAsync();
 
-            if (ambar == null)
+            if (anbar.Count == 0)
             {
                 return NotFound();
             }
 
 
-            return ambar;
+            return Ok(anbar);
         }
 
-        // PUT: api/Ambars/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAmbar(int id, AmbarUpdateDto model)
+        public async Task<IActionResult> UpdateWarehouse(int id, AnbarUpdateDto model)
         {
-            Ambar ambar = await _context.Ambars.FindAsync(id);
+
+            Anbar ambar = await _context.Ambars.FindAsync(id);
             ambar.Name = model.Name;
-            ambar.Type = model.Type;
             ambar.Place = model.Place;
             _context.Entry(ambar).State = EntityState.Modified;
 
@@ -84,26 +107,10 @@ namespace Warehouse.Controllers
             return NoContent();
         }
 
-        // POST: api/Ambars
-        [HttpPost]
-        public async Task<ActionResult<Ambar>> PostAmbar(AmbarCreateDto ambar)
-        {
+      
 
-            Ambar newAmbar = new();
-            newAmbar.Name = ambar.Name;
-            newAmbar.Place = ambar.Place;
-            newAmbar.Type = ambar.Type;
-
-            _context.Ambars.Add(newAmbar);
-
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetAmbar", new { id = newAmbar.Id }, ambar);
-        }
-
-        // DELETE: api/Ambars/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAmbar(int id)
+        public async Task<IActionResult> DeleteWarehouse(int id)
         {
 
             var ambar = await _context.Ambars.FindAsync(id);

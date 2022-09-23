@@ -2,12 +2,17 @@
 
 namespace Warehouse.Data.Models
 {
-    public class Category:BaseEntity
+    public sealed class Category:BaseEntity
     {
+        public Category()
+        {
+            categoryChildren = new List<Category>();
+        }
         public string Name { get; set; }
-        public int parent_id { get; set; }
-        ICollection<Product> Products { get; set; }
-
+        public int? ParentId { get; set; }
+        List<Product> Products { get; set; }
+        public Category Parent { get; set; }
+        public List<Category> categoryChildren{ get; set; }
 
     }
 }

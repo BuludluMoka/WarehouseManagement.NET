@@ -1,8 +1,11 @@
-﻿namespace Warehouse.Data.Dto.Category
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Warehouse.Data.Dto.Category
 {
     public class CategoryCreateDto
     {
+        [Required(ErrorMessage = "Kateqorya adini bos kecmeyin")]
         public string Name { get; set; }
-        public int parent_id { get; set; }
+        public int? parentId { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Warehouse.Data.Dto
+namespace Warehouse.Data.Dto.Products
 {
     public class ProductUpdateDto
     {
@@ -9,6 +9,5 @@ namespace Warehouse.Data.Dto
         public float buyPrice { get; set; }
         public float sellPrice { get; set; }
 
-        public int category_Id { get; set; }
     }
 }

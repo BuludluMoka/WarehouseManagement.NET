@@ -2,12 +2,13 @@
 
 namespace Warehouse.Data.Models
 {
-    public class Ambar:BaseEntity
+    public class Anbar:BaseEntity
     {
         public string Name { get; set; }
         public string Place { get; set; }
 
-        public string Type { get; set; }
+        public string  Phone { get; set; }
+
         public List<Transaction> Sender { get; set; }
         public List<Transaction> Receiver { get; set; }
         //public virtual ICollection<Transacction> receiverWarehouse { get; set; }
