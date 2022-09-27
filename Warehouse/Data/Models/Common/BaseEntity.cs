@@ -8,7 +8,5 @@ namespace Warehouse.Data.Models.Common
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
 
-
-
     }
 }

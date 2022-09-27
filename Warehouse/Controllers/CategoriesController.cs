@@ -12,9 +12,12 @@ using Warehouse.Data.Dto;
 using Warehouse.Data.Dto.Category;
 using Warehouse.Data.Models;
 using Warehouse.Core;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Warehouse.Controllers
 {
+
+    [Authorize(Roles = "User")]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
