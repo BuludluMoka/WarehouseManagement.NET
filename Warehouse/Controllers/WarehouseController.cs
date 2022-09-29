@@ -29,11 +29,11 @@ namespace Warehouse.Controllers
         [HttpGet]
         public async Task<IActionResult> GetWarehouses()
         {
-            if (_context.Ambars == null)
+            if (_context.Anbars == null)
             {
                 return NotFound();
             }
-            var anbarlar = await (from x in _context.Ambars
+            var anbarlar = await (from x in _context.Anbars
                            select new
                            {
                                x.Name,
@@ -48,7 +48,7 @@ namespace Warehouse.Controllers
         {
 
             Anbar newAmbar = _mapper.Map<Anbar>(anbar);
-            _context.Ambars.Add(newAmbar);
+            _context.Anbars.Add(newAmbar);
 
             await _context.SaveChangesAsync();
 
@@ -58,11 +58,11 @@ namespace Warehouse.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetWarehouseById(int id)
         {
-            if (_context.Ambars == null)
+            if (_context.Anbars == null)
             {
                 return NotFound();
             }
-            var anbar = await (from x in _context.Ambars
+            var anbar = await (from x in _context.Anbars
                         where x.Id == id
                         select new
                         {
@@ -83,7 +83,7 @@ namespace Warehouse.Controllers
         public async Task<IActionResult> UpdateWarehouse(int id, AnbarUpdateDto model)
         {
 
-            Anbar ambar = await _context.Ambars.FindAsync(id);
+            Anbar ambar = await _context.Anbars.FindAsync(id);
             ambar.Name = model.Name;
             ambar.Place = model.Place;
             _context.Entry(ambar).State = EntityState.Modified;
@@ -113,13 +113,13 @@ namespace Warehouse.Controllers
         public async Task<IActionResult> DeleteWarehouse(int id)
         {
 
-            var ambar = await _context.Ambars.FindAsync(id);
+            var ambar = await _context.Anbars.FindAsync(id);
             if (ambar == null)
             {
                 return NotFound();
             }
 
-            _context.Ambars.Remove(ambar);
+            _context.Anbars.Remove(ambar);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -127,7 +127,7 @@ namespace Warehouse.Controllers
 
         private bool AmbarExists(int id)
         {
-            return (_context.Ambars?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Anbars?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

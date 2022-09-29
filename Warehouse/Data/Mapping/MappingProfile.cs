@@ -51,9 +51,11 @@ namespace Warehouse.Data.Mapping
             //Transaction
             CreateMap<Transaction, TransactionCreateDto>();
             CreateMap<Transaction, TransactionUpdateDto>();
+            CreateMap<Transaction, AdminTransactionCreateDto>();
 
             CreateMap<TransactionCreateDto, Transaction>();
             CreateMap<TransactionUpdateDto, Transaction>();
+            CreateMap<AdminTransactionCreateDto, Transaction>();
         }
 
     }

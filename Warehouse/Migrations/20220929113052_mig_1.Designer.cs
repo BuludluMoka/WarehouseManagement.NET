@@ -12,8 +12,8 @@ using Warehouse.Data.Models;
 namespace Warehouse.Migrations
 {
     [DbContext(typeof(WarehouseDbContext))]
-    [Migration("20220927125246_mig_!")]
-    partial class mig_
+    [Migration("20220929113052_mig_1")]
+    partial class mig_1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -162,7 +162,41 @@ namespace Warehouse.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ambars");
+                    b.ToTable("Anbars");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Yasamal",
+                            Phone = "55623415",
+                            Place = "Baki,Yasamal,Dalan4"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Seki",
+                            Phone = "55623415",
+                            Place = "Seki,Xan Sarayi,Dalan4"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Qebele",
+                            Phone = "55623415",
+                            Place = "Qebele,Dalan4"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Nerimanov",
+                            Phone = "55623415",
+                            Place = "Baki,Nerimanov,Dalan4"
+                        });
                 });
 
             modelBuilder.Entity("Warehouse.Data.Models.Category", b =>
@@ -190,6 +224,69 @@ namespace Warehouse.Migrations
                     b.HasIndex("ParentId");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Electronics"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Medicine"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Laptops",
+                            ParentId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Mouse & Keyboards",
+                            ParentId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Computer Components",
+                            ParentId = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Accessories",
+                            ParentId = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Electronic Medical Equipment",
+                            ParentId = 2
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Diagnostic Medical Equipment",
+                            ParentId = 2
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Durable Medical Equipment",
+                            ParentId = 2
+                        });
                 });
 
             modelBuilder.Entity("Warehouse.Data.Models.Common.Authentication.AppRole", b =>
@@ -222,7 +319,7 @@ namespace Warehouse.Migrations
                         new
                         {
                             Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
-                            ConcurrencyStamp = "df221807-fd3f-4ed3-9ea8-64fb8e8555df",
+                            ConcurrencyStamp = "6890dff0-74a3-4c9f-b199-0f946cc9223e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -238,6 +335,9 @@ namespace Warehouse.Migrations
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("AnbarId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -285,6 +385,8 @@ namespace Warehouse.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AnbarId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -300,14 +402,17 @@ namespace Warehouse.Migrations
                         {
                             Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c0d08054-8732-4330-888c-3224194c5f2d",
+                            Address = "Warehouse",
+                            AnbarId = 1,
+                            ConcurrencyStamp = "b2dcef25-7828-43a2-8bc2-53dc02648352",
                             Email = "buludlumoka@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "BULUDLUMOKA@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKoXKG8JV8XBMQTixXDHusQgtl/WF+QUfo8HVWD01MCeyA+ko+lgbbSX3aabD4wVPw==",
-                            PhoneNumberConfirmed = false,
+                            PasswordHash = "AQAAAAEAACcQAAAAEBvr6i7hP+1P0k6jgdZzOeQ1MaL5SS6NiDBRaiCAHUdc/3G/D/UM7dSpche4h45r9Q==",
+                            PhoneNumber = "055557623415",
+                            PhoneNumberConfirmed = true,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
@@ -322,6 +427,9 @@ namespace Warehouse.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -335,17 +443,133 @@ namespace Warehouse.Migrations
                     b.Property<float>("buyPrice")
                         .HasColumnType("real");
 
-                    b.Property<int>("category_Id")
-                        .HasColumnType("int");
-
                     b.Property<float>("sellPrice")
                         .HasColumnType("real");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("category_Id");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 3,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Xiaomi RedmiBook Pro 15 Laptop 15.6 Inch 3.2K 90Hz Super Retina Screen AMD R5 5600H 16GB 512GB AMD Radeon Graphics Card Notebook",
+                            buyPrice = 1554.64f,
+                            sellPrice = 1660.55f
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 3,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Dere V9 MAX Laptop 15.6',Intel Core i7-1165G7, 16GB RAM + 1TB SSD, 2.5K IPS Screen, Computer Office Windows 11 Notebook",
+                            buyPrice = 1111.34f,
+                            sellPrice = 1300.56f
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 5,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "AMD RX 580 8G Computer Graphics Card,RX580 8G For GDDR5 GPU mining Video Card",
+                            buyPrice = 185.5f,
+                            sellPrice = 200f
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 5,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "AMD Ryzen 9 5900X R9 5900X 3.7 GHz Twelve-Core 24-Thread CPU Processor",
+                            buyPrice = 777.6f,
+                            sellPrice = 956.78f
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryId = 6,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Domiso Mutil-use Laptop Sleeve With Handle For 14' 15.6' 17' Inch Notebook Computer Bag",
+                            buyPrice = 61f,
+                            sellPrice = 74.6f
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryId = 6,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Fan For Computer PC Laptop Notebook",
+                            buyPrice = 3f,
+                            sellPrice = 3.6f
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CategoryId = 7,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Heart Rate Monitors",
+                            buyPrice = 800.6f,
+                            sellPrice = 996.78f
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CategoryId = 7,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Blood Pressure Monitors",
+                            buyPrice = 14000.6f,
+                            sellPrice = 15560.78f
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CategoryId = 7,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Ultrasound",
+                            buyPrice = 23000.6f,
+                            sellPrice = 35000.78f
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CategoryId = 8,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "MRI Scans",
+                            buyPrice = 12000.6f,
+                            sellPrice = 18000.78f
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CategoryId = 8,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "X-Rays",
+                            buyPrice = 4600.6f,
+                            sellPrice = 5000.78f
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CategoryId = 9,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Hospital beds",
+                            buyPrice = 700.6f,
+                            sellPrice = 956.78f
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CategoryId = 9,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Ventilators",
+                            buyPrice = 80.6f,
+                            sellPrice = 95.78f
+                        });
                 });
 
             modelBuilder.Entity("Warehouse.Data.Models.Transaction", b =>
@@ -362,6 +586,9 @@ namespace Warehouse.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
@@ -371,8 +598,8 @@ namespace Warehouse.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("product_id")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("receiver_id")
                         .HasColumnType("int");
@@ -382,7 +609,9 @@ namespace Warehouse.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("product_id");
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
 
                     b.HasIndex("receiver_id");
 
@@ -451,11 +680,22 @@ namespace Warehouse.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("Warehouse.Data.Models.Common.Authentication.AppUser", b =>
+                {
+                    b.HasOne("Warehouse.Data.Models.Anbar", "Anbar")
+                        .WithMany("Users")
+                        .HasForeignKey("AnbarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Anbar");
+                });
+
             modelBuilder.Entity("Warehouse.Data.Models.Product", b =>
                 {
                     b.HasOne("Warehouse.Data.Models.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("category_Id")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -466,9 +706,13 @@ namespace Warehouse.Migrations
                 {
                     b.HasOne("Warehouse.Data.Models.Product", "Product")
                         .WithMany("Transactions")
-                        .HasForeignKey("product_id")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Warehouse.Data.Models.Common.Authentication.AppUser", "User")
+                        .WithMany("Transactions")
+                        .HasForeignKey("UserId");
 
                     b.HasOne("Warehouse.Data.Models.Anbar", "Receiver")
                         .WithMany("Receiver")
@@ -485,6 +729,8 @@ namespace Warehouse.Migrations
                     b.Navigation("Receiver");
 
                     b.Navigation("Sender");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Warehouse.Data.Models.Anbar", b =>
@@ -492,11 +738,18 @@ namespace Warehouse.Migrations
                     b.Navigation("Receiver");
 
                     b.Navigation("Sender");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Warehouse.Data.Models.Category", b =>
                 {
                     b.Navigation("categoryChildren");
+                });
+
+            modelBuilder.Entity("Warehouse.Data.Models.Common.Authentication.AppUser", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("Warehouse.Data.Models.Product", b =>

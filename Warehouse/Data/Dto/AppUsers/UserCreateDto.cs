@@ -22,6 +22,9 @@ namespace Warehouse.Data.Dto.AppUsers
         [DataType(DataType.Password, ErrorMessage = "Xais edirik parolu butun qaydalara uygul formada giriniz...")]
         public string PasswordHash { get; set; }
 
+        [Required(ErrorMessage = "Xais edirik Userin Anbarini secin...")]
+        public int AnbarId { get; set; }
+
 
         public string PhoneNumber { get; set; }
 

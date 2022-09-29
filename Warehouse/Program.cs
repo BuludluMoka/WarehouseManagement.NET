@@ -11,14 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
-
-
 builder.Services.AddServices();
-
-
-
 
 var app = builder.Build();
 
@@ -31,9 +24,9 @@ app.UseDeveloperExceptionPage();
 //}
 
 app.UseStaticFiles();
-app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
+app.UseCors(opt => opt.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 app.UseAuthentication();
 app.UseAuthorization();
 

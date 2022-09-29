@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -9,6 +10,7 @@ using System.Text;
 using Warehouse.Data.Dto.AppUsers;
 using Warehouse.Data.Models;
 using Warehouse.Data.Models.Common.Authentication;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Warehouse.Controllers
@@ -32,6 +34,8 @@ namespace Warehouse.Controllers
             _mapper = mapper;
         }
 
+
+        
         [HttpGet]
         public  IActionResult GetAllUsers()
         {
@@ -68,17 +72,24 @@ namespace Warehouse.Controllers
                 AppUser user = await _userManager.FindByEmailAsync(model.Email);
                 if (user != null && await _userManager.CheckPasswordAsync(user,model.Password.Trim()))
                 {
-                    var claims = new[]
+                    var roles = await _userManager.GetRolesAsync(user);
+                    var claims = new List<Claim>
                     {
-                        new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                        new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                     };
+
+                    foreach (var role in roles)
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, role));
+                    }
+
                     var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecureKey"));
                         
                     var token = new JwtSecurityToken(
                         issuer: "https://localhost:7199",
                         audience: "https://localhost:7199",
-                        expires: DateTime.UtcNow.AddHours(1),
+                        expires: DateTime.UtcNow.AddMonths(1),
                         claims:claims,
                         signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256)
                         );

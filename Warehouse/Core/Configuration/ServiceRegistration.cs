@@ -19,10 +19,45 @@ namespace Warehouse.Core.Configuration
     {
         public static void AddServices(this IServiceCollection services)
         {
+
+            //.AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler=System.Text.Json.Serialization.ReferenceHandler.Preserve)
+            services.AddControllers().AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>());
+            services.AddEndpointsApiExplorer();
+            services.AddCors();
+
+
+            services.AddSwaggerGen(option =>
+            {
+                option.SwaggerDoc("v1", new OpenApiInfo { Title = "Warehouse Api", Version = "v1" });
+                option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter a valid token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                });
+                option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+            });
             services.AddDbContext<WarehouseDbContext>(options => options.UseSqlServer(ConfigurationDb.ConnectionString));
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             //Identity Basic Config
-            services.AddIdentity<IdentityUser, IdentityRole>(_ =>
+            services.AddIdentity<AppUser, AppRole>(_ =>
             {
                 _.Password.RequiredLength = 5;
                 _.Password.RequireNonAlphanumeric = false;
@@ -37,49 +72,6 @@ namespace Warehouse.Core.Configuration
                 .AddEntityFrameworkStores<WarehouseDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddCors(x =>
-                x.AddPolicy("AllowAll", x =>
-                {
-                    x.AllowAnyOrigin();
-                    x.AllowAnyMethod();
-                    x.AllowAnyHeader();
-                })
-            );
-
-
-
-            services.AddControllers().AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>());
-            //.AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler=System.Text.Json.Serialization.ReferenceHandler.Preserve)
-
-
-
-
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen(option =>
-            {
-                option.SwaggerDoc("v1", new OpenApiInfo { Title = "Developed By Buludlu", Version = "v1" });
-                option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    In = ParameterLocation.Header,
-                    Description = "Please enter a valid token",
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.Http,
-                    BearerFormat = "JWT",
-                    Scheme = "Bearer"
-                });
-                option.AddSecurityRequirement(new OpenApiSecurityRequirement{
-                {
-                   new OpenApiSecurityScheme
-                   { Reference = new OpenApiReference
-                {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
-                }},
-            new string[]{}
-                }
-                });
-            });
 
 
 
