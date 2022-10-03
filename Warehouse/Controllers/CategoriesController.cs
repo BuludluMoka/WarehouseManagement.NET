@@ -17,9 +17,9 @@ using Microsoft.AspNetCore.Authorization;
 namespace Warehouse.Controllers
 {
 
-    [Authorize(Roles = "User")]
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class CategoriesController : ControllerBase
     {
         private readonly WarehouseDbContext _context;
@@ -51,7 +51,7 @@ namespace Warehouse.Controllers
             {
                 x.Id,
                 x.Name,
-                SubCat = x.categoryChildren.Select(d => new { d.Name, d.Id })
+                SubCat = x.categoryChildren.Select(d => new { d.Id, d.Name })
             });
 
             return JsonConvert.SerializeObject(Tree,Formatting.Indented,
@@ -74,7 +74,7 @@ namespace Warehouse.Controllers
                                   {
                                       a.Id,
                                       a.Name,
-                                      a.ParentId
+                                      SubCat = a.categoryChildren.Select(d => new { d.Id, d.Name })
                                   }).ToListAsync();
             if (category.Count == 0)
             {
@@ -84,7 +84,7 @@ namespace Warehouse.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, CategoryUpdateDto model)
+        public async Task<IActionResult> UpdateCategory(int id,[FromForm] CategoryUpdateDto model)
         {
 
             Category category = await _context.Categories.FindAsync(id);
@@ -93,7 +93,7 @@ namespace Warehouse.Controllers
                 return NotFound();
             }
             category.Name = model.Name;
-            _context.Entry(category).State = EntityState.Modified;
+             _context.Update<Category>(category);
 
             try
             {
@@ -111,11 +111,11 @@ namespace Warehouse.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok();
         }
 
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory([FromForm] CategoryCreateDto model)
+        public async Task<ActionResult<Category>> PostCategory(CategoryCreateDto model)
         {
 
             Category category = _mapper.Map<Category>(model);

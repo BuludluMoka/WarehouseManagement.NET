@@ -24,7 +24,7 @@ namespace Warehouse.Core.Validator.Products
                 .NotNull().WithMessage("Mehsulun satis qiymetini bos kecmeyin.")
                 .Must(s => s >= 0).WithMessage("Mehsulun satis qiymeti menfi ola bilmez");
 
-            RuleFor(product => product.category_Id)
+            RuleFor(product => product.CategoryId)
                 .NotEmpty().WithMessage("Kateqoryani bos kecmeyin.")
                 .NotNull().WithMessage("Kateqoryani bos kecmeyin.");
         }

@@ -40,17 +40,32 @@ namespace Warehouse.Data.Models
                 .WithOne(x => x.Receiver)
                 .HasForeignKey(y => y.receiver_id);
 
+            builder.Ignore<IdentityUserToken<string>>();
+            builder.Ignore<IdentityUserLogin<string>>();
+            builder.Ignore<IdentityRoleClaim<string>>();
+            builder.Ignore<IdentityUserClaim<string>>();
+
+            builder.Entity<AppUser>()
+                //.Ignore(n => n.NormalizedEmail)
+                //.Ignore(n => n.NormalizedUserName)
+                .Ignore(e => e.EmailConfirmed)
+                .Ignore(c => c.ConcurrencyStamp)
+                .Ignore(p => p.PhoneNumberConfirmed)
+                .Ignore(t => t.TwoFactorEnabled)
+                .Ignore(l => l.LockoutEnabled)
+                .Ignore(l => l.LockoutEnd)
+                .Ignore(a => a.AccessFailedCount);
+
+            builder.Entity<AppUser>()
+                .HasQueryFilter(x => x.Status);
+
+            //builder.Entity<AppUser>()
+            //.HasQueryFilter(x => x.Id != "a18be9c0-aa65-4af8-bd17-00bd9344e575");
+
             //builder.Entity<AppUser>()
             //    .HasOne(x => x.Anbar)
             //    .WithMany(x => x.Users)
             //    .HasForeignKey<AppUser>(x => x);
-
-
-
-
-
-
-
 
 
             const string ADMIN_ID = "a18be9c0-aa65-4af8-bd17-00bd9344e575";
@@ -65,14 +80,13 @@ namespace Warehouse.Data.Models
                 AnbarId = 1,
                 UserName = "Admin",
                 NormalizedUserName = "ADMIN",
+                Status = true,
                 Email = "buludlumoka@gmail.com",
-                NormalizedEmail = "buludlumoka@gmail.com".ToUpper(),
-                EmailConfirmed = true,
+                NormalizedEmail = "BULUDLUMOKA@GMAIL.COM",
                 PasswordHash = hasher.HashPassword(null, "admin123"),
-                Address = "Warehouse",
+                Address = "WarehouseHome",
                 SecurityStamp = string.Empty,
-                PhoneNumber = "055557623415",
-                PhoneNumberConfirmed = true
+                PhoneNumber = "055557623415"
             });
 
             builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
@@ -90,7 +104,8 @@ namespace Warehouse.Data.Models
                     Id = 1,
                     Name = "Yasamal",
                     Phone = "55623415",
-                    Place = "Baki,Yasamal,Dalan4"
+                    Place = "Baki,Yasamal,Dalan4",
+                    CreatedDate = DateTime.Now
 
                 },
                 new Anbar
@@ -98,7 +113,8 @@ namespace Warehouse.Data.Models
                     Id = 2,
                     Name = "Seki",
                     Phone = "55623415",
-                    Place = "Seki,Xan Sarayi,Dalan4"
+                    Place = "Seki,Xan Sarayi,Dalan4",
+                    CreatedDate = DateTime.Now
 
                 },
                 new Anbar
@@ -106,7 +122,8 @@ namespace Warehouse.Data.Models
                     Id = 3,
                     Name = "Qebele",
                     Phone = "55623415",
-                    Place = "Qebele,Dalan4"
+                    Place = "Qebele,Dalan4",
+                    CreatedDate = DateTime.Now
 
                 },
                 new Anbar
@@ -114,7 +131,8 @@ namespace Warehouse.Data.Models
                     Id = 4,
                     Name = "Nerimanov",
                     Phone = "55623415",
-                    Place = "Baki,Nerimanov,Dalan4"
+                    Place = "Baki,Nerimanov,Dalan4",
+                    CreatedDate = DateTime.Now
 
                 }
             });
@@ -124,55 +142,64 @@ namespace Warehouse.Data.Models
               new Category
               {
                   Id = 1,
-                  Name = "Electronics"
+                  Name = "Electronics",
+                  CreatedDate = DateTime.Now
               },
               new Category
               {
                   Id = 2,
-                  Name = "Medicine"
+                  Name = "Medicine",
+                  CreatedDate = DateTime.Now
 
               },
               new Category //3
               {
                   Id = 3,
                   Name = "Laptops",
-                  ParentId = 1
+                  ParentId = 1,
+                  CreatedDate = DateTime.Now
               },
               new Category//4
               {
                   Id = 4,
                   Name = "Mouse & Keyboards",
-                  ParentId = 1
+                  ParentId = 1,
+                  CreatedDate = DateTime.Now
               },
               new Category//5
               {
                   Id = 5,
                   Name = "Computer Components",
-                  ParentId = 1
+                  ParentId = 1,
+                  CreatedDate = DateTime.Now
               },
               new Category//6
               {
                   Id = 6,
                   Name = "Accessories",
-                  ParentId = 1
+                  ParentId = 1,
+                  CreatedDate = DateTime.Now
               },
               new Category//7
               {
                   Id = 7,
                   Name = "Electronic Medical Equipment",
-                  ParentId = 2
+                  ParentId = 2,
+                  CreatedDate = DateTime.Now
               },
               new Category//8
               {
                   Id = 8,
                   Name = "Diagnostic Medical Equipment",
-                  ParentId = 2
+                  ParentId = 2,
+                  CreatedDate = DateTime.Now
               },
               new Category//9
               {
                   Id = 9,
                   Name = "Durable Medical Equipment",
-                  ParentId = 2
+                  ParentId = 2,
+                  CreatedDate = DateTime.Now
               }
             });
 
@@ -185,6 +212,7 @@ namespace Warehouse.Data.Models
                     buyPrice = 1554.64F,
                     sellPrice = 1660.55F,
                     CategoryId = 3,
+                    CreatedDate = DateTime.Now
 
 
 
@@ -195,8 +223,8 @@ namespace Warehouse.Data.Models
                     Name = "Dere V9 MAX Laptop 15.6',Intel Core i7-1165G7, 16GB RAM + 1TB SSD, 2.5K IPS Screen, Computer Office Windows 11 Notebook",
                     buyPrice = 1111.34F,
                     sellPrice = 1300.56F,
-                    CategoryId = 3
-
+                    CategoryId = 3,
+                    CreatedDate = DateTime.Now
 
                 },
                 new Product
@@ -205,8 +233,8 @@ namespace Warehouse.Data.Models
                     Name = "AMD RX 580 8G Computer Graphics Card,RX580 8G For GDDR5 GPU mining Video Card",
                     buyPrice = 185.50F,
                     sellPrice = 200,
-                    CategoryId = 5
-
+                    CategoryId = 5,
+                    CreatedDate = DateTime.Now
                 },
                 new Product
                 {
@@ -214,8 +242,8 @@ namespace Warehouse.Data.Models
                     Name = "AMD Ryzen 9 5900X R9 5900X 3.7 GHz Twelve-Core 24-Thread CPU Processor",
                     buyPrice = 777.60F,
                     sellPrice = 956.78F,
-                    CategoryId = 5
-
+                    CategoryId = 5,
+                    CreatedDate = DateTime.Now
                 },
                 new Product
                 {
@@ -223,8 +251,8 @@ namespace Warehouse.Data.Models
                     Name = "Domiso Mutil-use Laptop Sleeve With Handle For 14' 15.6' 17' Inch Notebook Computer Bag",
                     buyPrice = 61,
                     sellPrice = 74.60F,
-                    CategoryId = 6
-
+                    CategoryId = 6,
+                    CreatedDate = DateTime.Now
                 },
                 new Product
                 {
@@ -232,8 +260,8 @@ namespace Warehouse.Data.Models
                     Name = "Fan For Computer PC Laptop Notebook",
                     buyPrice = 3,
                     sellPrice = 3.60F,
-                    CategoryId = 6
-
+                    CategoryId = 6,
+                    CreatedDate = DateTime.Now
                 },
                 new Product
                 {
@@ -241,8 +269,8 @@ namespace Warehouse.Data.Models
                     Name = "Heart Rate Monitors",
                     buyPrice = 800.60F,
                     sellPrice = 996.78F,
-                    CategoryId = 7
-
+                    CategoryId = 7,
+                    CreatedDate = DateTime.Now
                 },
                 new Product
                 {
@@ -250,8 +278,8 @@ namespace Warehouse.Data.Models
                     Name = "Blood Pressure Monitors",
                     buyPrice = 14000.60F,
                     sellPrice = 15560.78F,
-                    CategoryId = 7
-
+                    CategoryId = 7,
+                    CreatedDate = DateTime.Now
                 },
                 new Product
                 {
@@ -259,8 +287,8 @@ namespace Warehouse.Data.Models
                     Name = "Ultrasound",
                     buyPrice = 23000.60F,
                     sellPrice = 35000.78F,
-                    CategoryId = 7
-
+                    CategoryId = 7,
+                    CreatedDate = DateTime.Now
                 },
                 new Product
                 {
@@ -268,8 +296,8 @@ namespace Warehouse.Data.Models
                     Name = "MRI Scans",
                     buyPrice = 12000.60F,
                     sellPrice = 18000.78F,
-                    CategoryId = 8
-
+                    CategoryId = 8,
+                    CreatedDate = DateTime.Now
                 },
                 new Product
                 {
@@ -277,8 +305,8 @@ namespace Warehouse.Data.Models
                     Name = "X-Rays",
                     buyPrice = 4600.60F,
                     sellPrice = 5000.78F,
-                    CategoryId = 8
-
+                    CategoryId = 8,
+                    CreatedDate = DateTime.Now
                 },
                 new Product
                 {
@@ -286,8 +314,8 @@ namespace Warehouse.Data.Models
                     Name = "Hospital beds",
                     buyPrice = 700.60F,
                     sellPrice = 956.78F,
-                    CategoryId = 9
-
+                    CategoryId = 9,
+                    CreatedDate = DateTime.Now
                 },
                 new Product
                 {
@@ -295,8 +323,8 @@ namespace Warehouse.Data.Models
                     Name = "Ventilators",
                     buyPrice = 80.60F,
                     sellPrice = 95.78F,
-                    CategoryId = 9
-
+                    CategoryId = 9,
+                    CreatedDate = DateTime.Now
                 }
             });
 
@@ -332,7 +360,7 @@ namespace Warehouse.Data.Models
                         case EntityState.Modified:
                             trackable.UpdatedDate = utcNow;
 
-                            entry.Property("CreatedOn").IsModified = false;
+                            entry.Property("CreatedDate").IsModified = false;
                             break;
 
                         case EntityState.Added:

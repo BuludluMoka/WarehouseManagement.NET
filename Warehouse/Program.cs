@@ -16,12 +16,50 @@ builder.Services.AddServices();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-//sif (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
+}
+
+
+
+
+
+#region Error Mid
+
+//app.Use(async (context, next) =>
 //{
-app.UseSwagger();
-app.UseSwaggerUI();
-app.UseDeveloperExceptionPage();
-//}
+//    var newContent = string.Empty;
+
+//    var existingBody = context.Response.Body;
+
+//    using (var newBody = new MemoryStream())
+//    {
+//        // We set the response body to our stream so we can read after the chain of middlewares have been called.
+//        context.Response.Body = newBody;
+
+//        await next();
+
+//        // Reset the body so nothing from the latter middlewares goes to the output.
+//        context.Response.Body = new MemoryStream();
+
+//        newBody.Seek(0, SeekOrigin.Begin);
+//        context.Response.Body = existingBody;
+//        // newContent will be `Hello`.
+//        newContent = new StreamReader(newBody).ReadToEnd();
+
+//        newContent += ", World!";
+
+//        // Send our modified content to the response body.
+//        await context.Response.WriteAsync(newContent);
+//    }
+//});
+
+#endregion
+
+
 
 app.UseStaticFiles();
 
@@ -31,6 +69,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
+
+
 
 app.Run();
 

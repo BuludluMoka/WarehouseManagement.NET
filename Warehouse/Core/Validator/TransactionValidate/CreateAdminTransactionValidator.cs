@@ -29,9 +29,6 @@ namespace Warehouse.Core.Validator.TransactionValidate
                 .NotNull()
                 .NotEmpty()
                 .WithMessage("Mehsulun miqdarini bos kecmeyin")
-                
-                
-               
                 .Must(s => s >= 0)
                     .WithMessage("Mehsulun miqdari menfi ola bilmez");
         }

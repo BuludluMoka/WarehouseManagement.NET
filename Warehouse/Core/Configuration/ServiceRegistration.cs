@@ -20,8 +20,8 @@ namespace Warehouse.Core.Configuration
         public static void AddServices(this IServiceCollection services)
         {
 
-            //.AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler=System.Text.Json.Serialization.ReferenceHandler.Preserve)
-            services.AddControllers().AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>());
+            //
+            services.AddControllers().AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>())/*.AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve)*/;
             services.AddEndpointsApiExplorer();
             services.AddCors();
 
@@ -59,7 +59,7 @@ namespace Warehouse.Core.Configuration
             //Identity Basic Config
             services.AddIdentity<AppUser, AppRole>(_ =>
             {
-                _.Password.RequiredLength = 5;
+                _.Password.RequiredLength = 6;
                 _.Password.RequireNonAlphanumeric = false;
                 _.Password.RequireDigit = false;
                 _.Password.RequireLowercase = false;
@@ -88,8 +88,8 @@ namespace Warehouse.Core.Configuration
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidAudience = "https://localhost:7199",
-                    ValidIssuer = "https://localhost:7199",
+                    ValidAudience = "http://karfree-001-site1.atempurl.com",
+                    ValidIssuer = "http://karfree-001-site1.atempurl.com",
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecureKey"))
                 };
             });

@@ -22,78 +22,6 @@ namespace Warehouse.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetRoleClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("LoginProvider", "ProviderKey");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserLogins", (string)null);
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
@@ -114,25 +42,6 @@ namespace Warehouse.Migrations
                             UserId = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
                             RoleId = "a18be9c0-aa65-4af8-bd17-00bd9344e575"
                         });
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("Warehouse.Data.Models.Anbar", b =>
@@ -166,7 +75,7 @@ namespace Warehouse.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6400),
                             Name = "Yasamal",
                             Phone = "55623415",
                             Place = "Baki,Yasamal,Dalan4"
@@ -174,7 +83,7 @@ namespace Warehouse.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6410),
                             Name = "Seki",
                             Phone = "55623415",
                             Place = "Seki,Xan Sarayi,Dalan4"
@@ -182,7 +91,7 @@ namespace Warehouse.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6412),
                             Name = "Qebele",
                             Phone = "55623415",
                             Place = "Qebele,Dalan4"
@@ -190,7 +99,7 @@ namespace Warehouse.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6413),
                             Name = "Nerimanov",
                             Phone = "55623415",
                             Place = "Baki,Nerimanov,Dalan4"
@@ -227,61 +136,61 @@ namespace Warehouse.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6433),
                             Name = "Electronics"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6434),
                             Name = "Medicine"
                         },
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6435),
                             Name = "Laptops",
                             ParentId = 1
                         },
                         new
                         {
                             Id = 4,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6437),
                             Name = "Mouse & Keyboards",
                             ParentId = 1
                         },
                         new
                         {
                             Id = 5,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6438),
                             Name = "Computer Components",
                             ParentId = 1
                         },
                         new
                         {
                             Id = 6,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6439),
                             Name = "Accessories",
                             ParentId = 1
                         },
                         new
                         {
                             Id = 7,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6440),
                             Name = "Electronic Medical Equipment",
                             ParentId = 2
                         },
                         new
                         {
                             Id = 8,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6441),
                             Name = "Diagnostic Medical Equipment",
                             ParentId = 2
                         },
                         new
                         {
                             Id = 9,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6442),
                             Name = "Durable Medical Equipment",
                             ParentId = 2
                         });
@@ -317,7 +226,7 @@ namespace Warehouse.Migrations
                         new
                         {
                             Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
-                            ConcurrencyStamp = "6890dff0-74a3-4c9f-b199-0f946cc9223e",
+                            ConcurrencyStamp = "a8fba4ed-4e13-4547-bdea-ad2ca91531c3",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -328,31 +237,15 @@ namespace Warehouse.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("AnbarId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -368,13 +261,10 @@ namespace Warehouse.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("TwoFactorEnabled")
+                    b.Property<bool>("Status")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
@@ -399,20 +289,15 @@ namespace Warehouse.Migrations
                         new
                         {
                             Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
-                            AccessFailedCount = 0,
-                            Address = "Warehouse",
+                            Address = "WarehouseHome",
                             AnbarId = 1,
-                            ConcurrencyStamp = "b2dcef25-7828-43a2-8bc2-53dc02648352",
                             Email = "buludlumoka@gmail.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
                             NormalizedEmail = "BULUDLUMOKA@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBvr6i7hP+1P0k6jgdZzOeQ1MaL5SS6NiDBRaiCAHUdc/3G/D/UM7dSpche4h45r9Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDTzlRF8WPYm3wcqBEma8t9n1XHD0gC8diz9BvO6fBNgqVhz3HvItjVVK27ickvRuw==",
                             PhoneNumber = "055557623415",
-                            PhoneNumberConfirmed = true,
                             SecurityStamp = "",
-                            TwoFactorEnabled = false,
+                            Status = true,
                             UserName = "Admin"
                         });
                 });
@@ -430,6 +315,9 @@ namespace Warehouse.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -455,7 +343,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 1,
                             CategoryId = 3,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6466),
                             Name = "Xiaomi RedmiBook Pro 15 Laptop 15.6 Inch 3.2K 90Hz Super Retina Screen AMD R5 5600H 16GB 512GB AMD Radeon Graphics Card Notebook",
                             buyPrice = 1554.64f,
                             sellPrice = 1660.55f
@@ -464,7 +352,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 2,
                             CategoryId = 3,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6468),
                             Name = "Dere V9 MAX Laptop 15.6',Intel Core i7-1165G7, 16GB RAM + 1TB SSD, 2.5K IPS Screen, Computer Office Windows 11 Notebook",
                             buyPrice = 1111.34f,
                             sellPrice = 1300.56f
@@ -473,7 +361,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 3,
                             CategoryId = 5,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6469),
                             Name = "AMD RX 580 8G Computer Graphics Card,RX580 8G For GDDR5 GPU mining Video Card",
                             buyPrice = 185.5f,
                             sellPrice = 200f
@@ -482,7 +370,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 4,
                             CategoryId = 5,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6470),
                             Name = "AMD Ryzen 9 5900X R9 5900X 3.7 GHz Twelve-Core 24-Thread CPU Processor",
                             buyPrice = 777.6f,
                             sellPrice = 956.78f
@@ -491,7 +379,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 5,
                             CategoryId = 6,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6471),
                             Name = "Domiso Mutil-use Laptop Sleeve With Handle For 14' 15.6' 17' Inch Notebook Computer Bag",
                             buyPrice = 61f,
                             sellPrice = 74.6f
@@ -500,7 +388,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 6,
                             CategoryId = 6,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6472),
                             Name = "Fan For Computer PC Laptop Notebook",
                             buyPrice = 3f,
                             sellPrice = 3.6f
@@ -509,7 +397,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 7,
                             CategoryId = 7,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6474),
                             Name = "Heart Rate Monitors",
                             buyPrice = 800.6f,
                             sellPrice = 996.78f
@@ -518,7 +406,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 8,
                             CategoryId = 7,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6475),
                             Name = "Blood Pressure Monitors",
                             buyPrice = 14000.6f,
                             sellPrice = 15560.78f
@@ -527,7 +415,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 9,
                             CategoryId = 7,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6476),
                             Name = "Ultrasound",
                             buyPrice = 23000.6f,
                             sellPrice = 35000.78f
@@ -536,7 +424,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 10,
                             CategoryId = 8,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6477),
                             Name = "MRI Scans",
                             buyPrice = 12000.6f,
                             sellPrice = 18000.78f
@@ -545,7 +433,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 11,
                             CategoryId = 8,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6478),
                             Name = "X-Rays",
                             buyPrice = 4600.6f,
                             sellPrice = 5000.78f
@@ -554,7 +442,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 12,
                             CategoryId = 9,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6480),
                             Name = "Hospital beds",
                             buyPrice = 700.6f,
                             sellPrice = 956.78f
@@ -563,7 +451,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 13,
                             CategoryId = 9,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6481),
                             Name = "Ventilators",
                             buyPrice = 80.6f,
                             sellPrice = 95.78f
@@ -618,33 +506,6 @@ namespace Warehouse.Migrations
                     b.ToTable("Transactions");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.HasOne("Warehouse.Data.Models.Common.Authentication.AppRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.HasOne("Warehouse.Data.Models.Common.Authentication.AppUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.HasOne("Warehouse.Data.Models.Common.Authentication.AppUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.HasOne("Warehouse.Data.Models.Common.Authentication.AppRole", null)
@@ -653,15 +514,6 @@ namespace Warehouse.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Warehouse.Data.Models.Common.Authentication.AppUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
                     b.HasOne("Warehouse.Data.Models.Common.Authentication.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")

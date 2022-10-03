@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Warehouse.Core.RequestParameters;
 using Warehouse.Data.Dto;
 using Warehouse.Data.Dto.Products;
 using Warehouse.Data.Models;
@@ -14,6 +16,7 @@ namespace Warehouse.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class ProductsController : ControllerBase
     {
         private readonly WarehouseDbContext _context;
@@ -22,19 +25,20 @@ namespace Warehouse.Controllers
         public ProductsController(WarehouseDbContext context, IMapper mapper)
         {
             _context = context;
-            _mapper = mapper;   
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts()
+        public IActionResult GetProducts([FromQuery]Pagination pagination)
         {
             if (_context.Products == null)
             {
                 return NotFound();
             }
-            var product = await (from a in _context.Products
-                                 select new { a.Name, a.buyPrice, a.sellPrice, Category = a.Category.Name, a.CreatedDate }).ToListAsync();
-            return Ok(product);
+            var totalProducts = _context.Products.Count();
+            var products = (from a in _context.Products
+                                  select new { a.Name, a.buyPrice, a.sellPrice, Category = a.Category.Name, a.CreatedDate }).Skip(pagination.Size * pagination.Page).Take(pagination.Size);
+            return Ok(new { totalProducts, products });
         }
 
         [HttpGet("{id}")]
@@ -46,7 +50,7 @@ namespace Warehouse.Controllers
             }
             var products = await (from a in _context.Products
                                   where a.Id == id
-                                  select new { a.Name, a.buyPrice, a.sellPrice, Category = a.Category.Name, a.CreatedDate }).ToListAsync();
+                                  select new { a.Id, a.Name, a.buyPrice, a.sellPrice, Category = a.Category.Name, a.CreatedDate }).ToListAsync();
 
             if (products.Count == 0)
             {
@@ -59,13 +63,13 @@ namespace Warehouse.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct([FromForm] ProductCreateDto model)
+        public async Task<ActionResult<Product>> PostProduct(ProductCreateDto model)
         {
 
-            bool isCategoryExist = await _context.Categories.AnyAsync(x => x.Id == model.category_Id);
+            bool isCategoryExist = await _context.Categories.AnyAsync(x => x.Id == model.CategoryId);
             if (!isCategoryExist)
             {
-                return NotFound();
+                return NotFound(new { ErrorMessage = "Gosterdiyniz kateqoriya tapilmadi.." });
             }
             Product newProduct = _mapper.Map<Product>(model);
 
@@ -79,20 +83,12 @@ namespace Warehouse.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id, ProductUpdateDto model)
         {
-            Product product = await _context.Products.FindAsync(id);
-            product.Name = model.Name;
-            product.buyPrice = model.buyPrice;
-            product.sellPrice = model.sellPrice;
-            product.Name = model.Name;
+            Product products = await _context.Products.FindAsync(id);
+            if (products == null) return NotFound(new { ErrorMessage = $"{id} nomreli mehsul tapilmadi" });
+            Product product = _mapper.Map<Product>(model);
 
             _context.Entry(product).State = EntityState.Modified;
 
-            if (id != product.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(product).State = EntityState.Modified;
 
             try
             {

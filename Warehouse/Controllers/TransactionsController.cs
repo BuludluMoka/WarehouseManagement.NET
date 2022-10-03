@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Warehouse.Core.RequestParameters;
 using Warehouse.Data.Dto;
 using Warehouse.Data.Dto.Transactions;
 using Warehouse.Data.Models;
@@ -18,6 +19,7 @@ namespace Warehouse.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class TransactionsController : ControllerBase
     {
         private readonly WarehouseDbContext _context;
@@ -32,25 +34,26 @@ namespace Warehouse.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetTransactions()
+        public  ActionResult GetTransactions([FromQuery] Pagination pagination)
         {
             if (_context.Transactions == null)
             {
                 return NotFound();
             }
-            var transactions = await (from x in _context.Transactions
+            var totalTransaction = _context.Transactions.Count();
+            var transactions =  (from x in _context.Transactions
                                       select new
                                       {
                                           Sender = x.Sender.Name,
                                           Receiver = x.Receiver.Name,
                                           Mehsul = x.Product.Name,
                                           Miqdar = x.Count
-                                      }).ToListAsync();
-            return Ok(transactions);
+                                      }).Skip(pagination.Size * pagination.Page).Take(pagination.Size);
+            return Ok(new { totalTransaction, transactions});
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetTransactionsById(int id)
+        public async Task<ActionResult> GetTransactionById(int id)
         {
             if (_context.Transactions == null)
             {
@@ -75,68 +78,13 @@ namespace Warehouse.Controllers
         }
 
 
-
-        [HttpPost]
-        [Authorize(Roles = "User,Admin")]
-        public async Task<ActionResult<Transaction>> UserPostTransactions([FromForm] TransactionCreateDto model)
-        {
-            AppUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
-
-            bool isProductExist = _context.Products.Any(x => x.Id == model.productId);
-            bool isSenderExist = _context.Anbars.Any(x => x.Id == currentUser.AnbarId);
-            if (currentUser.AnbarId == model.Receiver) { return SentMessage("Eyni anbarlar arasi gonderim ede bilmezsiniz", false); }
-            model.Receiver = model.Sender == false ? currentUser.AnbarId : model.Receiver;
-           
-
-            if (model.Sender == true)
-            {
-                bool isReceiverExist = _context.Anbars.Any(x => x.Id == model.Receiver);
-                if (!isReceiverExist) { return SentMessage("Mehsul gondermek isdediyiniz anbar tapilmadi", false); }
-            }
-
-            if (!isProductExist) { return SentMessage("Anbarda bu mehsuldan yoxdur", false); }
-
-            Transaction newTransaction = new Transaction()
-            {
-                TransactionNo = model.TransactionNo,
-                sender_id = model.Sender == true ? currentUser.AnbarId : null,
-                receiver_id = model.Receiver,
-                ProductId = model.productId,
-                UserId = currentUser.Id,
-                Count = model.Count
-            };
-            if (model.Sender)
-            {
-                int inProduct = (from t in _context.Transactions
-                                 where t.ProductId == model.productId && t.receiver_id == currentUser.AnbarId
-                                 select t).Sum(x => x.Count);
-
-                int outProduct = (from t in _context.Transactions
-                                  where t.ProductId == model.productId && t.sender_id == currentUser.AnbarId
-                                  select t).Sum(x => x.Count);
-
-                if (inProduct - outProduct < model.Count)
-                {
-                    return SentMessage("Anbarda kifayet qeder mehsul yoxdur", false);
-                }
-
-                _context.Transactions.Add(newTransaction);
-            }
-            _context.Transactions.Add(newTransaction);
-            await _context.SaveChangesAsync();
-
-            return SentMessage($"Mehsul gonderildi", true, model);
-        }
-
-
-        [HttpPost]
         [Authorize(Roles = "Admin")]
-        [Route("AdminPostTransactions")]
-        public async Task<ActionResult<Transaction>> AdminPostTransactions([FromForm] AdminTransactionCreateDto model)
+        [HttpPost, Route("PostTransaction")]
+        public async Task<ActionResult<Transaction>> PostTransaction( AdminTransactionCreateDto model)
         {
 
 
-
+            bool isTransactionNoExist = _context.Transactions.Any(x => x.TransactionNo == model.TransactionNo);
             model.sender_id = model.sender_id == 0 ? null : model.sender_id;
 
             bool isProductExist = _context.Products.Any(x => x.Id == model.ProductId);
@@ -144,7 +92,7 @@ namespace Warehouse.Controllers
             bool isReceiverExist = _context.Anbars.Any(x => x.Id == model.receiver_id);
 
 
-
+                
             if (model.sender_id == model.receiver_id) { return SentMessage("Eyni anbarlar arasi gonderim ede bilmezsiniz", false); }
             if (!isProductExist) { return SentMessage("Anbarda bu mehsuldan yoxdur", false); }
             if (!isSenderExist && model.sender_id != null) { return SentMessage("Mehsulu gonderen anbar Tapilmadi", false); }
@@ -178,10 +126,12 @@ namespace Warehouse.Controllers
 
         }
 
+        [NonAction]
         private bool TransactionsExists(int id)
         {
             return (_context.Transactions?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+        [NonAction]
         private ObjectResult SentMessage(string msj, bool isSucces, object model = null)
         {
             if (isSucces == true)

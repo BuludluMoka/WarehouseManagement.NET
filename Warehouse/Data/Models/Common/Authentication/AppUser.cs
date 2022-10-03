@@ -11,6 +11,7 @@ namespace Warehouse.Data.Models.Common.Authentication
         [ForeignKey("Anbar")]
         public int AnbarId { get; set; }
         public string Address { get; set; }
+        public bool Status { get; set; } = true;
         public Anbar Anbar { get; set; }
         public List<Transaction> Transactions { get; set; }
 
