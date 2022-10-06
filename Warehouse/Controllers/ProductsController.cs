@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Warehouse.Core.Helpers;
 using Warehouse.Core.RequestParameters;
 using Warehouse.Data.Dto;
 using Warehouse.Data.Dto.Products;
@@ -16,7 +17,7 @@ namespace Warehouse.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class ProductsController : ControllerBase
     {
         private readonly WarehouseDbContext _context;
@@ -29,16 +30,26 @@ namespace Warehouse.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetProducts([FromQuery]Pagination pagination)
+
+        public IActionResult GetProducts([FromQuery] Pagination pagination)
         {
             if (_context.Products == null)
             {
-                return NotFound();
+                return NotFound(new Response<object>() { Message = "Product tapilmadi" });
             }
             var totalProducts = _context.Products.Count();
             var products = (from a in _context.Products
-                                  select new { a.Name, a.buyPrice, a.sellPrice, Category = a.Category.Name, a.CreatedDate }).Skip(pagination.Size * pagination.Page).Take(pagination.Size);
-            return Ok(new { totalProducts, products });
+                            select new
+                            {
+                                a.Id,
+                                a.Name,
+                                a.buyPrice,
+                                a.sellPrice,
+                                Category = a.Category.Name,
+                                a.CreatedDate
+                            }).Skip((pagination.Page - 1) * (pagination.Size)).Take(pagination.Size);
+
+            return Ok(new Response<object>(new { totalProducts, products }));
         }
 
         [HttpGet("{id}")]
@@ -57,12 +68,13 @@ namespace Warehouse.Controllers
                 return NotFound();
             }
 
-            return Ok(products);
+            return Ok(new Response<object>(products));
         }
 
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Product>> PostProduct(ProductCreateDto model)
         {
 
@@ -76,41 +88,32 @@ namespace Warehouse.Controllers
             _context.Products.Add(newProduct);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("PostProduct", new { id = newProduct.Id }, model);
+            return Ok(new Response<object>(model) { Succeeded=true, Message = "Mehsul uğurla əlavə edildi!" });
         }
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateProduct(int id, ProductUpdateDto model)
         {
             Product products = await _context.Products.FindAsync(id);
-            if (products == null) return NotFound(new { ErrorMessage = $"{id} nomreli mehsul tapilmadi" });
+            if (products == null) return NotFound(new Response<object>(model) { Message = $"Məhsul tapılmadı" });
             Product product = _mapper.Map<Product>(model);
 
             _context.Entry(product).State = EntityState.Modified;
 
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
 
-            return NoContent();
+            await _context.SaveChangesAsync();
+
+
+            return Ok(new Response<object>(model) { Succeeded=true,  Message = "Məhsul yeniləndi", Data = model });
+            
         }
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             if (_context.Products == null)
@@ -126,7 +129,7 @@ namespace Warehouse.Controllers
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new Response<object>(){ Succeeded = true, Message = "Məhsul uğurla silindi" });
         }
 
         private bool ProductExists(int id)

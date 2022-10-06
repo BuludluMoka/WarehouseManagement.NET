@@ -69,6 +69,7 @@ namespace Warehouse.Migrations
                     AnbarId = table.Column<int>(type: "int", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<bool>(type: "bit", nullable: false),
+                    ResetPassword = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -185,43 +186,43 @@ namespace Warehouse.Migrations
                 columns: new[] { "Id", "CreatedDate", "Name", "Phone", "Place", "UpdatedDate" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6400), "Yasamal", "55623415", "Baki,Yasamal,Dalan4", null },
-                    { 2, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6410), "Seki", "55623415", "Seki,Xan Sarayi,Dalan4", null },
-                    { 3, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6412), "Qebele", "55623415", "Qebele,Dalan4", null },
-                    { 4, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6413), "Nerimanov", "55623415", "Baki,Nerimanov,Dalan4", null }
+                    { 1, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5646), "Yasamal", "55623415", "Baki,Yasamal,Dalan4", null },
+                    { 2, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5657), "Seki", "55623415", "Seki,Xan Sarayi,Dalan4", null },
+                    { 3, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5658), "Qebele", "55623415", "Qebele,Dalan4", null },
+                    { 4, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5659), "Nerimanov", "55623415", "Baki,Nerimanov,Dalan4", null }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", "a8fba4ed-4e13-4547-bdea-ad2ca91531c3", "Admin", "ADMIN" });
+                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", "064bb7b7-6f70-4918-8cb3-272dac7978c2", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "Id", "CreatedDate", "Name", "ParentId", "UpdatedDate" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6433), "Electronics", null, null },
-                    { 2, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6434), "Medicine", null, null }
+                    { 1, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5683), "Electronics", null, null },
+                    { 2, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5685), "Medicine", null, null }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "Address", "AnbarId", "Email", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "SecurityStamp", "Status", "UserName" },
-                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", "WarehouseHome", 1, "buludlumoka@gmail.com", "BULUDLUMOKA@GMAIL.COM", "ADMIN", "AQAAAAEAACcQAAAAEDTzlRF8WPYm3wcqBEma8t9n1XHD0gC8diz9BvO6fBNgqVhz3HvItjVVK27ickvRuw==", "055557623415", "", true, "Admin" });
+                columns: new[] { "Id", "Address", "AnbarId", "Email", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "ResetPassword", "SecurityStamp", "Status", "UserName" },
+                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", "WarehouseHome", 1, "buludlumoka@gmail.com", "BULUDLUMOKA@GMAIL.COM", "ADMIN", "AQAAAAEAACcQAAAAELiIObJNd5DkI9xGNHgFQ0Tl4efdr8t9eXk8gNvduArF5TXqFbuzF2GMxB23TrwqZw==", "055557623415", null, "", true, "Admin" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "Id", "CreatedDate", "Name", "ParentId", "UpdatedDate" },
                 values: new object[,]
                 {
-                    { 3, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6435), "Laptops", 1, null },
-                    { 4, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6437), "Mouse & Keyboards", 1, null },
-                    { 5, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6438), "Computer Components", 1, null },
-                    { 6, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6439), "Accessories", 1, null },
-                    { 7, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6440), "Electronic Medical Equipment", 2, null },
-                    { 8, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6441), "Diagnostic Medical Equipment", 2, null },
-                    { 9, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6442), "Durable Medical Equipment", 2, null }
+                    { 3, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5686), "Laptops", 1, null },
+                    { 4, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5687), "Mouse & Keyboards", 1, null },
+                    { 5, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5690), "Computer Components", 1, null },
+                    { 6, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5691), "Accessories", 1, null },
+                    { 7, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5693), "Electronic Medical Equipment", 2, null },
+                    { 8, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5694), "Diagnostic Medical Equipment", 2, null },
+                    { 9, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5695), "Durable Medical Equipment", 2, null }
                 });
 
             migrationBuilder.InsertData(
@@ -234,19 +235,19 @@ namespace Warehouse.Migrations
                 columns: new[] { "Id", "CategoryId", "CreatedDate", "Description", "Name", "UpdatedDate", "buyPrice", "sellPrice" },
                 values: new object[,]
                 {
-                    { 1, 3, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6466), null, "Xiaomi RedmiBook Pro 15 Laptop 15.6 Inch 3.2K 90Hz Super Retina Screen AMD R5 5600H 16GB 512GB AMD Radeon Graphics Card Notebook", null, 1554.64f, 1660.55f },
-                    { 2, 3, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6468), null, "Dere V9 MAX Laptop 15.6',Intel Core i7-1165G7, 16GB RAM + 1TB SSD, 2.5K IPS Screen, Computer Office Windows 11 Notebook", null, 1111.34f, 1300.56f },
-                    { 3, 5, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6469), null, "AMD RX 580 8G Computer Graphics Card,RX580 8G For GDDR5 GPU mining Video Card", null, 185.5f, 200f },
-                    { 4, 5, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6470), null, "AMD Ryzen 9 5900X R9 5900X 3.7 GHz Twelve-Core 24-Thread CPU Processor", null, 777.6f, 956.78f },
-                    { 5, 6, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6471), null, "Domiso Mutil-use Laptop Sleeve With Handle For 14' 15.6' 17' Inch Notebook Computer Bag", null, 61f, 74.6f },
-                    { 6, 6, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6472), null, "Fan For Computer PC Laptop Notebook", null, 3f, 3.6f },
-                    { 7, 7, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6474), null, "Heart Rate Monitors", null, 800.6f, 996.78f },
-                    { 8, 7, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6475), null, "Blood Pressure Monitors", null, 14000.6f, 15560.78f },
-                    { 9, 7, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6476), null, "Ultrasound", null, 23000.6f, 35000.78f },
-                    { 10, 8, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6477), null, "MRI Scans", null, 12000.6f, 18000.78f },
-                    { 11, 8, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6478), null, "X-Rays", null, 4600.6f, 5000.78f },
-                    { 12, 9, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6480), null, "Hospital beds", null, 700.6f, 956.78f },
-                    { 13, 9, new DateTime(2022, 10, 3, 12, 13, 9, 359, DateTimeKind.Local).AddTicks(6481), null, "Ventilators", null, 80.6f, 95.78f }
+                    { 1, 3, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5829), null, "Xiaomi RedmiBook Pro 15 Laptop 15.6 Inch 3.2K 90Hz Super Retina Screen AMD R5 5600H 16GB 512GB AMD Radeon Graphics Card Notebook", null, 1554.64f, 1660.55f },
+                    { 2, 3, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5831), null, "Dere V9 MAX Laptop 15.6',Intel Core i7-1165G7, 16GB RAM + 1TB SSD, 2.5K IPS Screen, Computer Office Windows 11 Notebook", null, 1111.34f, 1300.56f },
+                    { 3, 5, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5832), null, "AMD RX 580 8G Computer Graphics Card,RX580 8G For GDDR5 GPU mining Video Card", null, 185.5f, 200f },
+                    { 4, 5, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5833), null, "AMD Ryzen 9 5900X R9 5900X 3.7 GHz Twelve-Core 24-Thread CPU Processor", null, 777.6f, 956.78f },
+                    { 5, 6, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5834), null, "Domiso Mutil-use Laptop Sleeve With Handle For 14' 15.6' 17' Inch Notebook Computer Bag", null, 61f, 74.6f },
+                    { 6, 6, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5835), null, "Fan For Computer PC Laptop Notebook", null, 3f, 3.6f },
+                    { 7, 7, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5836), null, "Heart Rate Monitors", null, 800.6f, 996.78f },
+                    { 8, 7, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5838), null, "Blood Pressure Monitors", null, 14000.6f, 15560.78f },
+                    { 9, 7, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5839), null, "Ultrasound", null, 23000.6f, 35000.78f },
+                    { 10, 8, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5840), null, "MRI Scans", null, 12000.6f, 18000.78f },
+                    { 11, 8, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5841), null, "X-Rays", null, 4600.6f, 5000.78f },
+                    { 12, 9, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5842), null, "Hospital beds", null, 700.6f, 956.78f },
+                    { 13, 9, new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5843), null, "Ventilators", null, 80.6f, 95.78f }
                 });
 
             migrationBuilder.CreateIndex(

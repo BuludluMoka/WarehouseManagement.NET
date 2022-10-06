@@ -44,7 +44,7 @@ namespace Warehouse.Controllers
                                              Miqdar = tr.Count,
                                              Veziyyeti = tr.Status == false ? "Gozlemede" : "Qebul edildi",
                                              Nevaxt = tr.CreatedDate.ToString("yyyy-MM-dd : HH-mm-ss"),
-                                             Kim = tr.sender_id == null ? "Import" : tr.User.Email
+                                             Kim = tr.sender_id == null ? "-" : tr.User.Email
 
                                          }).ToListAsync();
 
@@ -52,6 +52,7 @@ namespace Warehouse.Controllers
             return Ok(userTransaction);
         }
 
+   
         [HttpPost]
         public async Task<ActionResult<Transaction>> UserPostTransaction(TransactionCreateDto model)
         {

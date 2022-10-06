@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Warehouse.Core.Helpers;
 using Warehouse.Data.Dto;
 using Warehouse.Data.Dto.Ambar;
 using Warehouse.Data.Models;
@@ -33,20 +34,22 @@ namespace Warehouse.Controllers
         {
             if (_context.Anbars == null)
             {
-                return NotFound();
+                return NotFound(new Response<object> { });
             }
             var anbarlar = await (from x in _context.Anbars
                            select new
                            {
+                               x.Id,
                                x.Name,
                                x.Place
                               
                            }).ToListAsync();
-            return Ok(anbarlar);
+            return Ok(new Response<object>(anbarlar));
         }
 
         [HttpPost]
-        public async Task<ActionResult<Anbar>> PostWarehouse([FromForm] AnbarCreateDto anbar)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Anbar>> PostWarehouse( AnbarCreateDto anbar)
         {
 
             Anbar newAmbar = _mapper.Map<Anbar>(anbar);
@@ -64,10 +67,12 @@ namespace Warehouse.Controllers
             {
                 return NotFound();
             }
+
             var anbar = await (from x in _context.Anbars
                         where x.Id == id
                         select new
                         {
+                            x.Id,
                             x.Name,
                             x.Place,
                         }).ToListAsync();
@@ -78,10 +83,11 @@ namespace Warehouse.Controllers
             }
 
 
-            return Ok(anbar);
+            return Ok(new Response<object>(anbar));
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateWarehouse(int id, AnbarUpdateDto model)
         {
 
@@ -106,12 +112,13 @@ namespace Warehouse.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(new Response<object>() { Message = "Anbar Yeniləndi"});
         }
 
       
 
         [HttpDelete("{id}")]
+          [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteWarehouse(int id)
         {
 
@@ -121,10 +128,19 @@ namespace Warehouse.Controllers
                 return NotFound();
             }
 
-            _context.Anbars.Remove(ambar);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Anbars.Remove(ambar);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return BadRequest(new Response<object>() { Message = "Anbari silerken bir xeta yarandi" });
 
-            return NoContent();
+            }
+
+            return Ok(new Response<object>() { Message = "Anbar Silindi" });
+
         }
 
         private bool AmbarExists(int id)

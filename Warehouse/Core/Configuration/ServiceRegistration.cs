@@ -17,11 +17,15 @@ namespace Warehouse.Core.Configuration
 {
     public static class ServiceRegistration
     {
+
         public static void AddServices(this IServiceCollection services)
         {
 
-            //
-            services.AddControllers().AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>())/*.AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve)*/;
+            /*.AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve)*/
+
+
+
+           
             services.AddEndpointsApiExplorer();
             services.AddCors();
 

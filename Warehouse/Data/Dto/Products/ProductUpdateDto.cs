@@ -6,8 +6,9 @@ namespace Warehouse.Data.Dto.Products
     {
 
         public string Name { get; set; }
-        public float buyPrice { get; set; }
         public float sellPrice { get; set; }
+        public string? Description { get; set; }
+        public int CategoryId { get; set; }
 
     }
 }

@@ -14,12 +14,14 @@ using Microsoft.EntityFrameworkCore;
 using System.Net;
 using Warehouse.Core.Configuration;
 using Warehouse.Core.RequestParameters;
+using Warehouse.Core.Services.EmailService;
+using Warehouse.Core.Helpers;
 
 namespace Warehouse.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
@@ -27,13 +29,16 @@ namespace Warehouse.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly WarehouseDbContext _context;
         private readonly IMapper _mapper;
-        public AdminController(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, SignInManager<AppUser> signInManager, WarehouseDbContext context, IMapper mapper)
+        private readonly IEmailSender _emailSender;
+
+        public AdminController(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, SignInManager<AppUser> signInManager, WarehouseDbContext context, IMapper mapper, IEmailSender emailSender)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _context = context;
             _mapper = mapper;
+            _emailSender = emailSender;
         }
 
         [HttpGet]
@@ -44,10 +49,11 @@ namespace Warehouse.Controllers
 
             if (users == null)
             {
-                return NotFound();
+                return NotFound(new Response<object>() { Message = "Istifadəçi tapılmadı" }); 
+
             }
 
-            return Ok(userShowDto);
+            return Ok(new Response<object>(userShowDto));
         }
 
 
@@ -57,11 +63,12 @@ namespace Warehouse.Controllers
             AppUser appUser = await _userManager.FindByIdAsync(id);
             if (appUser == null)
             {
-                return NotFound();
+                return NotFound(new Response<object>() { Message = "Istifadəçi tapılmadı" });
             }
             UserShowDto userShowDto = _mapper.Map<UserShowDto>(appUser);
 
-            return Ok(userShowDto);
+            //return Ok(userShowDto);
+            return Ok(new Response<object>(userShowDto));
         }
 
 
@@ -124,25 +131,45 @@ namespace Warehouse.Controllers
                 return BadRequest();
             }
             string message = status == true ? "User Aktiv olundu" : "User Deaktiv olundu";
-            return Ok(new { success = message });
+            return Ok(new Response<object>(){ Message= "User Deaktiv olundu"});
         }
 
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserTransactionsbyId(string id)
+        {
+            AppUser user = await _userManager.FindByIdAsync(id);
+
+            var userTransaction = await (from tr in _context.Transactions
+                                         where tr.receiver_id == user.AnbarId || tr.sender_id == user.AnbarId
+                                         orderby tr.CreatedDate
+                                         select new
+                                         {
+                                             tr.Id,
+                                             TransactionNo = tr.TransactionNo,
+                                             Hardan = tr.Sender.Name == null ? "Import" : tr.Sender.Name,
+                                             Hara = tr.Receiver.Name,
+                                             Mehsul = tr.Product.Name,
+                                             Kateqoriyasi = tr.Product.Category.Name,
+                                             Miqdar = tr.Count,
+                                             Veziyyeti = tr.Status == false ? "Gozlemede" : "Qebul edildi",
+                                             Nevaxt = tr.CreatedDate.ToString("yyyy-MM-dd : HH-mm-ss"),
+                                             Kim = tr.User.UserName
+
+                                         }).ToListAsync();
+
+            if (userTransaction == null) return NotFound(new Response<object>() { Message = "Transaction tapılmadı" });
+            return Ok(new Response<object>(userTransaction));
+        }
 
 
         [HttpGet]
-        public  IActionResult getInfo([FromQuery]Pagination pagination)
+        public IActionResult getInfo()
         {
-            var totalProduct = _context.Products.Count();
-            var products = (from x in _context.Products
-                           select new
-                           {
-                               x.Id,
-                               x.Name,
-                               x.Description,
+            Message message = new Message(new List<string>() { "buludlumoka@gmail.com"},"Test Email","hello",null);
+            _emailSender.SendEmailAsync(message);
 
-                           }).Skip(pagination.Size * pagination.Page).Take(pagination.Size);
-            return Ok(new { totalProduct, products});
+            return Ok();
         }
     }
 }

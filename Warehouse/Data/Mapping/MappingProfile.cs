@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Warehouse.Data.Dto;
 using Warehouse.Data.Dto.Ambar;
+using Warehouse.Data.Dto.Anbar;
 using Warehouse.Data.Dto.AppUsers;
 using Warehouse.Data.Dto.Category;
 using Warehouse.Data.Dto.Products;
@@ -28,9 +29,11 @@ namespace Warehouse.Data.Mapping
             //Ambar
             CreateMap<Anbar,AnbarCreateDto>();
             CreateMap<Anbar, AnbarUpdateDto>();
+            CreateMap<Anbar, AnbarShowDto>();
 
             CreateMap<AnbarCreateDto, Anbar>();
             CreateMap<AnbarUpdateDto, Anbar>();
+            CreateMap<AnbarShowDto, Anbar>();
 
             //Category
             CreateMap<Category, CategoryCreateDto>();

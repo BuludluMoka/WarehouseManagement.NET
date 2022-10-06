@@ -19,7 +19,7 @@ namespace Warehouse.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+  
     public class CategoriesController : ControllerBase
     {
         private readonly WarehouseDbContext _context;
@@ -84,6 +84,7 @@ namespace Warehouse.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateCategory(int id,[FromForm] CategoryUpdateDto model)
         {
 
@@ -115,6 +116,7 @@ namespace Warehouse.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Category>> PostCategory(CategoryCreateDto model)
         {
 
@@ -128,6 +130,7 @@ namespace Warehouse.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             if (_context.Categories == null)

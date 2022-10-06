@@ -13,9 +13,6 @@ namespace Warehouse.Core.Validator.Products
                  .MinimumLength(3)
                      .WithMessage("Mehsul adını 5 ile 50 herf arasında giriniz.");
 
-            RuleFor(product => product.buyPrice)
-                .Must(s => s >= 0)
-                    .WithMessage("Mehsul qiymeti menfi ola bilmez");
 
             RuleFor(product => product.sellPrice)
                 .Must(s => s >= 0)

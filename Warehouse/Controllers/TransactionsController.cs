@@ -41,14 +41,15 @@ namespace Warehouse.Controllers
                 return NotFound();
             }
             var totalTransaction = _context.Transactions.Count();
-            var transactions =  (from x in _context.Transactions
-                                      select new
-                                      {
-                                          Sender = x.Sender.Name,
-                                          Receiver = x.Receiver.Name,
-                                          Mehsul = x.Product.Name,
-                                          Miqdar = x.Count
-                                      }).Skip(pagination.Size * pagination.Page).Take(pagination.Size);
+            var transactions = (from x in _context.Transactions
+                                select new
+                                {
+                                    Sender = x.Sender.Name,
+                                    Receiver = x.Receiver.Name,
+                                    Mehsul = x.Product.Name,
+                                    Miqdar = x.Count
+                                }).Skip((pagination.Page - 1) * (pagination.Size)).Take(pagination.Size);
+
             return Ok(new { totalTransaction, transactions});
         }
 
@@ -97,6 +98,7 @@ namespace Warehouse.Controllers
             if (!isProductExist) { return SentMessage("Anbarda bu mehsuldan yoxdur", false); }
             if (!isSenderExist && model.sender_id != null) { return SentMessage("Mehsulu gonderen anbar Tapilmadi", false); }
             if (!isReceiverExist) { return SentMessage("Mehsulu qebul eden anbar tapilmadi", false); }
+            if (isTransactionNoExist) return BadRequest(new { ErrorMessage = "Transaction Nomresi movcuddur" });
 
             Transaction newTransaction = _mapper.Map<Transaction>(model);
             newTransaction.UserId = (await _userManager.GetUserAsync(HttpContext.User)).Id;
@@ -105,11 +107,11 @@ namespace Warehouse.Controllers
             if (isSenderExist)
             {
                 int inProduct = (from t in _context.Transactions
-                                 where t.ProductId == model.ProductId && t.receiver_id == model.sender_id
+                                 where t.ProductId == model.ProductId && t.receiver_id == model.sender_id && t.Status != false
                                  select t).Sum(x => x.Count);
 
                 int outProduct = (from t in _context.Transactions
-                                  where t.ProductId == model.ProductId && t.sender_id == model.sender_id
+                                  where t.ProductId == model.ProductId && t.sender_id == model.sender_id && t.Status != false
                                   select t).Sum(x => x.Count);
 
                 if (inProduct - outProduct < model.Count)

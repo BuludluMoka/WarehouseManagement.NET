@@ -10,6 +10,8 @@ namespace Warehouse.Data.Dto.Products
         public float buyPrice { get; set; }
         public float sellPrice { get; set; }
 
+        public string? Description { get; set; }
+
         [Required]
         public int CategoryId { get; set; }
     }

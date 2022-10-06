@@ -8,12 +8,33 @@ using System.Reflection;
 using Microsoft.AspNetCore.Identity;
 using Warehouse.Data.Models.Common.Authentication;
 using Microsoft.IdentityModel.Tokens;
+using Warehouse.Core.Services.EmailService;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddServices();
 
+
+var EmailConf=  builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+builder.Services.AddControllers()
+               .ConfigureApiBehaviorOptions(options =>
+               {
+                   options.SuppressMapClientErrors = true;
+               })
+               .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>());
+builder.Services.AddServices();
+builder.Services.AddSingleton(EmailConf);
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+
+
+builder.Services.Configure<FormOptions>(o => {
+    o.ValueLengthLimit = int.MaxValue;
+    o.MultipartBodyLengthLimit = int.MaxValue;
+    o.MemoryBufferThreshold = int.MaxValue;
+});
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -59,6 +80,11 @@ if (app.Environment.IsDevelopment())
 
 #endregion
 
+
+//app.Use(async (contex, next) =>
+//{
+
+//});
 
 
 app.UseStaticFiles();

@@ -29,16 +29,16 @@ namespace Warehouse.Core.Services.EmailService
         private MimeMessage CreateEmailMessage(Message message)
         {
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress(_emailConfig.From,"dawd"));
+            emailMessage.From.Add(new MailboxAddress("gmail.com",_emailConfig.From));
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
 
             var bodyBuilder = new BodyBuilder { HtmlBody = string.Format("<h2 style='color:red;'>{0}</h2>", message.Content) };
 
-            if (message.Attachments != null && message.Attachments.Any())
+            if (message.optionalFiles != null && message.optionalFiles.Any())
             {
                 byte[] fileBytes;
-                foreach (var attachment in message.Attachments)
+                foreach (var attachment in message.optionalFiles)
                 {
                     using (var ms = new MemoryStream())
                     {
@@ -60,9 +60,9 @@ namespace Warehouse.Core.Services.EmailService
             {
                 try
                 {
-                    client.Connect(_emailConfig.SmtpServer, _emailConfig.Port, true);
+                    client.Connect(_emailConfig.SmtpServer,_emailConfig.Port,true);
                     client.AuthenticationMechanisms.Remove("XOAUTH2");
-                    client.Authenticate(_emailConfig.UserName, _emailConfig.Password);
+                    client.Authenticate(_emailConfig.From, _emailConfig.Password);
 
                     client.Send(mailMessage);
                 }
