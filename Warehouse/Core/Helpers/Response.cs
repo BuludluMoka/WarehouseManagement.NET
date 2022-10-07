@@ -1,6 +1,6 @@
 ﻿namespace Warehouse.Core.Helpers
 {
-    public class Response<T>
+    public class Response<T> 
     {
         public Response()
         {

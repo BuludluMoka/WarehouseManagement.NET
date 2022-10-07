@@ -12,7 +12,7 @@ using Warehouse.Data.Models;
 namespace Warehouse.Migrations
 {
     [DbContext(typeof(WarehouseDbContext))]
-    [Migration("20221006063043_mig1")]
+    [Migration("20221007063057_mig1")]
     partial class mig1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,7 +77,7 @@ namespace Warehouse.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5646),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1557),
                             Name = "Yasamal",
                             Phone = "55623415",
                             Place = "Baki,Yasamal,Dalan4"
@@ -85,7 +85,7 @@ namespace Warehouse.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5657),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1567),
                             Name = "Seki",
                             Phone = "55623415",
                             Place = "Seki,Xan Sarayi,Dalan4"
@@ -93,7 +93,7 @@ namespace Warehouse.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5658),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1568),
                             Name = "Qebele",
                             Phone = "55623415",
                             Place = "Qebele,Dalan4"
@@ -101,7 +101,7 @@ namespace Warehouse.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5659),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1570),
                             Name = "Nerimanov",
                             Phone = "55623415",
                             Place = "Baki,Nerimanov,Dalan4"
@@ -138,61 +138,61 @@ namespace Warehouse.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5683),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1599),
                             Name = "Electronics"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5685),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1601),
                             Name = "Medicine"
                         },
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5686),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1602),
                             Name = "Laptops",
                             ParentId = 1
                         },
                         new
                         {
                             Id = 4,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5687),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1603),
                             Name = "Mouse & Keyboards",
                             ParentId = 1
                         },
                         new
                         {
                             Id = 5,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5690),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1605),
                             Name = "Computer Components",
                             ParentId = 1
                         },
                         new
                         {
                             Id = 6,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5691),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1606),
                             Name = "Accessories",
                             ParentId = 1
                         },
                         new
                         {
                             Id = 7,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5693),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1607),
                             Name = "Electronic Medical Equipment",
                             ParentId = 2
                         },
                         new
                         {
                             Id = 8,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5694),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1609),
                             Name = "Diagnostic Medical Equipment",
                             ParentId = 2
                         },
                         new
                         {
                             Id = 9,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5695),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1611),
                             Name = "Durable Medical Equipment",
                             ParentId = 2
                         });
@@ -228,7 +228,7 @@ namespace Warehouse.Migrations
                         new
                         {
                             Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
-                            ConcurrencyStamp = "064bb7b7-6f70-4918-8cb3-272dac7978c2",
+                            ConcurrencyStamp = "9c1eaa79-ca93-4f7f-9442-f742cecbcbd6",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -299,7 +299,7 @@ namespace Warehouse.Migrations
                             Email = "buludlumoka@gmail.com",
                             NormalizedEmail = "BULUDLUMOKA@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAELiIObJNd5DkI9xGNHgFQ0Tl4efdr8t9eXk8gNvduArF5TXqFbuzF2GMxB23TrwqZw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKCCM/LUnZkL/o5gcRUvSOkoOcpWjRT2/hzUgJnA2c0l/g79H+PVhGqEnLypb86+sg==",
                             PhoneNumber = "055557623415",
                             SecurityStamp = "",
                             Status = true,
@@ -348,7 +348,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 1,
                             CategoryId = 3,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5829),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1640),
                             Name = "Xiaomi RedmiBook Pro 15 Laptop 15.6 Inch 3.2K 90Hz Super Retina Screen AMD R5 5600H 16GB 512GB AMD Radeon Graphics Card Notebook",
                             buyPrice = 1554.64f,
                             sellPrice = 1660.55f
@@ -357,7 +357,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 2,
                             CategoryId = 3,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5831),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1641),
                             Name = "Dere V9 MAX Laptop 15.6',Intel Core i7-1165G7, 16GB RAM + 1TB SSD, 2.5K IPS Screen, Computer Office Windows 11 Notebook",
                             buyPrice = 1111.34f,
                             sellPrice = 1300.56f
@@ -366,7 +366,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 3,
                             CategoryId = 5,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5832),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1643),
                             Name = "AMD RX 580 8G Computer Graphics Card,RX580 8G For GDDR5 GPU mining Video Card",
                             buyPrice = 185.5f,
                             sellPrice = 200f
@@ -375,7 +375,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 4,
                             CategoryId = 5,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5833),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1644),
                             Name = "AMD Ryzen 9 5900X R9 5900X 3.7 GHz Twelve-Core 24-Thread CPU Processor",
                             buyPrice = 777.6f,
                             sellPrice = 956.78f
@@ -384,7 +384,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 5,
                             CategoryId = 6,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5834),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1645),
                             Name = "Domiso Mutil-use Laptop Sleeve With Handle For 14' 15.6' 17' Inch Notebook Computer Bag",
                             buyPrice = 61f,
                             sellPrice = 74.6f
@@ -393,7 +393,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 6,
                             CategoryId = 6,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5835),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1646),
                             Name = "Fan For Computer PC Laptop Notebook",
                             buyPrice = 3f,
                             sellPrice = 3.6f
@@ -402,7 +402,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 7,
                             CategoryId = 7,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5836),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1648),
                             Name = "Heart Rate Monitors",
                             buyPrice = 800.6f,
                             sellPrice = 996.78f
@@ -411,7 +411,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 8,
                             CategoryId = 7,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5838),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1649),
                             Name = "Blood Pressure Monitors",
                             buyPrice = 14000.6f,
                             sellPrice = 15560.78f
@@ -420,7 +420,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 9,
                             CategoryId = 7,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5839),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1650),
                             Name = "Ultrasound",
                             buyPrice = 23000.6f,
                             sellPrice = 35000.78f
@@ -429,7 +429,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 10,
                             CategoryId = 8,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5840),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1652),
                             Name = "MRI Scans",
                             buyPrice = 12000.6f,
                             sellPrice = 18000.78f
@@ -438,7 +438,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 11,
                             CategoryId = 8,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5841),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1653),
                             Name = "X-Rays",
                             buyPrice = 4600.6f,
                             sellPrice = 5000.78f
@@ -447,7 +447,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 12,
                             CategoryId = 9,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5842),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1654),
                             Name = "Hospital beds",
                             buyPrice = 700.6f,
                             sellPrice = 956.78f
@@ -456,7 +456,7 @@ namespace Warehouse.Migrations
                         {
                             Id = 13,
                             CategoryId = 9,
-                            CreatedDate = new DateTime(2022, 10, 6, 10, 30, 43, 661, DateTimeKind.Local).AddTicks(5843),
+                            CreatedDate = new DateTime(2022, 10, 7, 10, 30, 57, 621, DateTimeKind.Local).AddTicks(1655),
                             Name = "Ventilators",
                             buyPrice = 80.6f,
                             sellPrice = 95.78f

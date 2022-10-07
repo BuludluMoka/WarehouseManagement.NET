@@ -109,11 +109,26 @@ namespace Warehouse.Controllers
 
             }
             return BadRequest(ModelState);
-
-
         }
 
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ChangeUserPassword(string email, string newPassword, string PasswordConfirmation)
+        {
+            //AppUser currentUser = HttpContext.User.Identity as AppUser;
+            AppUser user = await _userManager.FindByEmailAsync(email);
+            //var a = _userManager
+            if (user == null) return BadRequest(new Response<object>() { Message = "User tapilmadi" });
+            if (newPassword != PasswordConfirmation) return BadRequest(new Response<object>() { Message = "Password eyni olmalidir" });
+            await _userManager.RemovePasswordAsync(user);
 
+            var result = await _userManager.AddPasswordAsync(user, newPassword);
+            if (result.Succeeded)
+            {
+                return Ok(new Response<object>() { Succeeded = true, Message = "Parol guncellendi" });
+            }
+            return BadRequest(new Response<object>() { Succeeded = false, Message = "Parol yenilenerken bir xeta yarandi" });
+        }
 
         [HttpPut]
         public async Task<IActionResult> DeactiveOrActiveUser(string id, bool status)

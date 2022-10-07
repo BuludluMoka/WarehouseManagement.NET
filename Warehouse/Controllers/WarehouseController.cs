@@ -28,7 +28,7 @@ namespace Warehouse.Controllers
             _mapper = mapper;
         }
 
-        
+
         [HttpGet]
         public async Task<IActionResult> GetWarehouses()
         {
@@ -37,19 +37,19 @@ namespace Warehouse.Controllers
                 return NotFound(new Response<object> { });
             }
             var anbarlar = await (from x in _context.Anbars
-                           select new
-                           {
-                               x.Id,
-                               x.Name,
-                               x.Place
-                              
-                           }).ToListAsync();
+                                  select new
+                                  {
+                                      x.Id,
+                                      x.Name,
+                                      x.Place
+
+                                  }).ToListAsync();
             return Ok(new Response<object>(anbarlar));
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Anbar>> PostWarehouse( AnbarCreateDto anbar)
+        public async Task<ActionResult<Anbar>> PostWarehouse(AnbarCreateDto anbar)
         {
 
             Anbar newAmbar = _mapper.Map<Anbar>(anbar);
@@ -69,13 +69,13 @@ namespace Warehouse.Controllers
             }
 
             var anbar = await (from x in _context.Anbars
-                        where x.Id == id
-                        select new
-                        {
-                            x.Id,
-                            x.Name,
-                            x.Place,
-                        }).ToListAsync();
+                               where x.Id == id
+                               select new
+                               {
+                                   x.Id,
+                                   x.Name,
+                                   x.Place,
+                               }).ToListAsync();
 
             if (anbar.Count == 0)
             {
@@ -112,34 +112,26 @@ namespace Warehouse.Controllers
                 }
             }
 
-            return Ok(new Response<object>() { Message = "Anbar Yeniləndi"});
+            return Ok(new Response<object>() { Message = "Anbar Yeniləndi" });
         }
 
-      
+
 
         [HttpDelete("{id}")]
-          [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteWarehouse(int id)
         {
-
+            if (_context.Anbars == null) return NotFound();
+            if(_context.Anbars.Any(x=>x.Id != id)) return NotFound(new Response<object>() { Message = "Bele bir anbar tapilmadi"});
+            bool hasUserWarehouse = _context.AppUsers.Any(x => x.AnbarId == id);
+            bool hasTransaction = _context.Transactions.Any(x => x.sender_id == id || x.receiver_id == id);
+            if (hasUserWarehouse || hasTransaction) return BadRequest(new Response<object>() { Message = "Anbarı silə bilməzsiniz" });
             var ambar = await _context.Anbars.FindAsync(id);
-            if (ambar == null)
-            {
-                return NotFound();
-            }
 
-            try
-            {
-                _context.Anbars.Remove(ambar);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                return BadRequest(new Response<object>() { Message = "Anbari silerken bir xeta yarandi" });
+            _context.Anbars.Remove(ambar);
+            await _context.SaveChangesAsync();
 
-            }
-
-            return Ok(new Response<object>() { Message = "Anbar Silindi" });
+            return Ok(new Response<object>() { Succeeded = true, Message = "Anbar Silindi" });
 
         }
 
