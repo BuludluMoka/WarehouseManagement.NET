@@ -49,7 +49,7 @@ namespace Warehouse.Controllers
 
             if (users == null)
             {
-                return NotFound(new Response<object>() { Message = "Istifadəçi tapılmadı" }); 
+                return NotFound(new Response<object>() { Message = "Istifadəçi tapılmadı" });
 
             }
 
@@ -82,7 +82,7 @@ namespace Warehouse.Controllers
                 AppUser appUser = _mapper.Map<AppUser>(userCreateDto);
                 IdentityResult result = await _userManager.CreateAsync(appUser, userCreateDto.PasswordHash.Trim());
 
-               
+
                 if (result.Succeeded)
                 {
                     if (!_roleManager.RoleExistsAsync("User").Result)
@@ -111,18 +111,18 @@ namespace Warehouse.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpPut]
+        [HttpPut("Email")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> ChangeUserPassword(string email, string newPassword, string PasswordConfirmation)
+        public async Task<IActionResult> ChangeUserPassword(ChangeUserPasswordDto changeUserPasswordDto)
         {
             //AppUser currentUser = HttpContext.User.Identity as AppUser;
-            AppUser user = await _userManager.FindByEmailAsync(email);
+            AppUser user = await _userManager.FindByEmailAsync(changeUserPasswordDto.Email);
             //var a = _userManager
             if (user == null) return BadRequest(new Response<object>() { Message = "User tapilmadi" });
-            if (newPassword != PasswordConfirmation) return BadRequest(new Response<object>() { Message = "Password eyni olmalidir" });
+            if (changeUserPasswordDto.newPassword != changeUserPasswordDto.PasswordConfirmation) return BadRequest(new Response<object>() { Message = "Password eyni olmalidir" });
             await _userManager.RemovePasswordAsync(user);
 
-            var result = await _userManager.AddPasswordAsync(user, newPassword);
+            var result = await _userManager.AddPasswordAsync(user, changeUserPasswordDto.newPassword);
             if (result.Succeeded)
             {
                 return Ok(new Response<object>() { Succeeded = true, Message = "Parol guncellendi" });
@@ -130,7 +130,9 @@ namespace Warehouse.Controllers
             return BadRequest(new Response<object>() { Succeeded = false, Message = "Parol yenilenerken bir xeta yarandi" });
         }
 
-        [HttpPut]
+
+
+        [HttpPut("{id}")]
         public async Task<IActionResult> DeactiveOrActiveUser(string id, bool status)
         {
 
@@ -149,6 +151,27 @@ namespace Warehouse.Controllers
             return Ok(new Response<object>(){ Message= "User Deaktiv olundu"});
         }
 
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> AcceptUserTransaction(int id, bool accept)
+        {
+            Transaction transaction = await _context.Transactions.FindAsync(id);
+            if (transaction == null) return NotFound(new Response<object> { Message = $"{id} nomreli transaction tapilmadi" });
+            if (accept)
+            {
+                transaction.Status = true;
+                _context.Entry(transaction).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                return BadRequest(new Response<object> { Message = "Transactionu yanliz qebul ede bilersiniz.." });
+            }
+
+
+
+            return Ok(new Response<object> { Succeeded = true, Message = "Mehsulu qebul etdiniz.." });
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserTransactionsbyId(string id)

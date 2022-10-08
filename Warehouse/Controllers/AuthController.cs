@@ -121,6 +121,7 @@ namespace Warehouse.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> ForgetPassword( string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -146,6 +147,7 @@ namespace Warehouse.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> ResetPasswordConfirmation([FromQuery] string token, string email, [FromQuery] string? newPassword, string? PasswordConfirmation)
         {
             AppUser user = await _userManager.FindByEmailAsync(email);

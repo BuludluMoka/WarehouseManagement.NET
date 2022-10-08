@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Warehouse.Core.Helpers;
 using Warehouse.Core.RequestParameters;
 using Warehouse.Data.Dto;
 using Warehouse.Data.Dto.Transactions;
@@ -44,6 +45,7 @@ namespace Warehouse.Controllers
             var transactions = (from x in _context.Transactions
                                 select new
                                 {
+                                    x.Id,
                                     Sender = x.Sender.Name,
                                     Receiver = x.Receiver.Name,
                                     Mehsul = x.Product.Name,
@@ -81,7 +83,7 @@ namespace Warehouse.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost, Route("PostTransaction")]
-        public async Task<ActionResult<Transaction>> PostTransaction( AdminTransactionCreateDto model)
+        public async Task<ActionResult> PostTransaction( AdminTransactionCreateDto model)
         {
 
 
@@ -94,11 +96,11 @@ namespace Warehouse.Controllers
 
 
                 
-            if (model.sender_id == model.receiver_id) { return SentMessage("Eyni anbarlar arasi gonderim ede bilmezsiniz", false); }
-            if (!isProductExist) { return SentMessage("Anbarda bu mehsuldan yoxdur", false); }
-            if (!isSenderExist && model.sender_id != null) { return SentMessage("Mehsulu gonderen anbar Tapilmadi", false); }
-            if (!isReceiverExist) { return SentMessage("Mehsulu qebul eden anbar tapilmadi", false); }
-            if (isTransactionNoExist) return BadRequest(new { ErrorMessage = "Transaction Nomresi movcuddur" });
+            if (model.sender_id == model.receiver_id)  return BadRequest( new Response<object> { Message = "Eyni anbarlar arasi gonderim ede bilmezsiniz" });
+            if (!isProductExist) return BadRequest( new Response<object> { Message= "Anbarda bu mehsuldan yoxdur" });
+            if (!isSenderExist && model.sender_id != null) return NotFound(new Response<object> { Message = "Mehsulu gonderen anbar Tapilmadi" });
+            if (!isReceiverExist) return NotFound(new Response<object> { Message= "Mehsulu qebul eden anbar tapilmadi" });
+            if (isTransactionNoExist) return BadRequest(new Response<object> { Message = "Transaction Nomresi movcuddur" });
 
             Transaction newTransaction = _mapper.Map<Transaction>(model);
             newTransaction.UserId = (await _userManager.GetUserAsync(HttpContext.User)).Id;
@@ -116,7 +118,8 @@ namespace Warehouse.Controllers
 
                 if (inProduct - outProduct < model.Count)
                 {
-                    return SentMessage("Anbarda kifayet qeder mehsul yoxdur", false);
+                    return NotFound(new Response<object>() { Message = "Anbarda kifayet qeder mehsul yoxdur" });
+                    
                 }
 
                 _context.Transactions.Add(newTransaction);
@@ -124,7 +127,18 @@ namespace Warehouse.Controllers
             _context.Transactions.Add(newTransaction);
             await _context.SaveChangesAsync();
 
-            return SentMessage($"Mehsul gonderildi", true, model);
+            object returnedTransaction = new
+            {
+                Id = newTransaction.Id,
+                TransactionNo = newTransaction.TransactionNo,
+                Sender = newTransaction.sender_id,
+                Receiver = newTransaction.receiver_id,
+                Mehsul = newTransaction.ProductId,
+                Miqdar = newTransaction.Count
+            };
+
+            return Ok(new Response<object>(returnedTransaction) { Message = "Mehsul gonderildi"});
+            //return SentMessage($"Mehsul gonderildi", true, model);
 
         }
 

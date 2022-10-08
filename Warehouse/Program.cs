@@ -39,11 +39,12 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseDeveloperExceptionPage();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
    
-    app.UseDeveloperExceptionPage();
+    
 }
 
 

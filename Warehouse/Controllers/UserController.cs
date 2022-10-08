@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Warehouse.Core.Helpers;
 using Warehouse.Data.Dto;
 using Warehouse.Data.Models;
 using Warehouse.Data.Models.Common.Authentication;
@@ -52,7 +53,33 @@ namespace Warehouse.Controllers
             return Ok(userTransaction);
         }
 
-   
+        [HttpGet]
+        public async Task<IActionResult> GetTransactions()
+        {
+            AppUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
+
+            var userTransaction = await (from tr in _context.Transactions
+                                         where tr.receiver_id == currentUser.AnbarId
+                                         orderby tr.CreatedDate
+                                         select new
+                                         {
+                                             tr.Id,
+                                             TransactionNo = tr.TransactionNo,
+                                             Hardan = tr.Sender.Name == null ? "Import" : tr.Sender.Name,
+                                             Mehsul = tr.Product.Name,
+                                             Kateqoriyasi = tr.Product.Category.Name,
+                                             Miqdar = tr.Count,
+                                             Veziyyeti = tr.Status == false ? "Gozlemede" : "Qebul edildi",
+                                             Nevaxt = tr.CreatedDate.ToString("yyyy-MM-dd : HH-mm-ss"),
+                                             Kim = tr.sender_id == null ? "-" : tr.User.Email
+
+                                         }).ToListAsync();
+
+            if (userTransaction == null) return NotFound(new Response<object> { Message = "Transactionlar tapilmadi"});
+            return Ok(new Response<object>(userTransaction));
+        }
+
+
         [HttpPost]
         public async Task<ActionResult<Transaction>> UserPostTransaction(TransactionCreateDto model)
         {
@@ -130,7 +157,7 @@ namespace Warehouse.Controllers
 
 
 
-            return Ok(new { Success = "Mehsulu qebul etdiniz.." });
+            return Ok(new Response<object> { Message= "Mehsulu qebul etdiniz.." });
         }
 
     }
