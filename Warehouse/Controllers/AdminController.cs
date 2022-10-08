@@ -13,15 +13,14 @@ using Warehouse.Data.Models.Common.Authentication;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using Warehouse.Core.Configuration;
-using Warehouse.Core.RequestParameters;
 using Warehouse.Core.Services.EmailService;
-using Warehouse.Core.Helpers;
+using Warehouse.Core.Helpers.Wrappers;
 
 namespace Warehouse.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
@@ -42,18 +41,39 @@ namespace Warehouse.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUsers([FromQuery] PaginationFilter pFilter, string? search, string sortOrder)
         {
-            List<AppUser> users = await _userManager.Users.ToListAsync();
-            List<UserShowDto> userShowDto = _mapper.Map<List<UserShowDto>>(users);
+
+            IQueryable<AppUser> users = _userManager.Users.IgnoreQueryFilters();
 
             if (users == null)
             {
                 return NotFound(new Response<object>() { Message = "Istifadəçi tapılmadı" });
-
             }
 
-            return Ok(new Response<object>(userShowDto));
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                users = users.Where(x => x.UserName.Contains(search) || x.Email.Contains(search));
+            }
+            switch (sortOrder)
+            {
+                case "nameDesc":
+                    users = users.OrderByDescending(x => new { x.UserName, x.Email });
+                    break;
+                default:
+                    break;
+            }
+
+            var returnedUsers = users.Skip((pFilter.PageNumber - 1) * pFilter.PageSize)
+                .Take(pFilter.PageSize).ToList();
+
+            var data = _mapper.Map<IEnumerable<UserShowDto>>(returnedUsers);
+
+
+            int totalRecord = users.Count();
+
+            return Ok(new PagedResponse<IEnumerable<UserShowDto>>(data, pFilter.PageNumber, pFilter.PageSize, totalRecord));
         }
 
 
@@ -67,20 +87,22 @@ namespace Warehouse.Controllers
             }
             UserShowDto userShowDto = _mapper.Map<UserShowDto>(appUser);
 
-            //return Ok(userShowDto);
-            return Ok(new Response<object>(userShowDto));
+            return Ok(new Response<UserShowDto>(userShowDto));
         }
 
 
         [HttpPost]
         public async Task<IActionResult> CreateUser(UserCreateDto userCreateDto)
         {
+            bool availableWarehousetoUser = _userManager.Users.Any(x => x.AnbarId == userCreateDto.AnbarId && x.Status == true);
+            if (availableWarehousetoUser) return BadRequest(new Response<object> { Message = "Anbarin artiq bir aktiv isdifadecisi var " });
             if (ModelState.IsValid)
             {
                 bool anbarIdValid = await _context.Anbars.AnyAsync(x => x.Id == userCreateDto.AnbarId);
                 if (!anbarIdValid) return BadRequest(new { error = "Olmayan bir anbar girdiniz" });
                 AppUser appUser = _mapper.Map<AppUser>(userCreateDto);
                 IdentityResult result = await _userManager.CreateAsync(appUser, userCreateDto.PasswordHash.Trim());
+
 
 
                 if (result.Succeeded)
@@ -111,7 +133,7 @@ namespace Warehouse.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpPut("Email")]
+        [HttpPut()]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ChangeUserPassword(ChangeUserPasswordDto changeUserPasswordDto)
         {
@@ -136,27 +158,26 @@ namespace Warehouse.Controllers
         public async Task<IActionResult> DeactiveOrActiveUser(string id, bool status)
         {
 
-            try
-            {
-                var user = await _userManager.Users.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == id);
-                user.Status = status;
-                await _userManager.UpdateAsync(user);
-            }
-            catch (Exception)
-            {
-
-                return BadRequest();
-            }
+            var user = await _userManager.Users.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == id);
+            if (user == null) return NotFound(new Response<object> { Message = "Bele bir user tapilmadi" });
+            user.Status = status;
+            await _userManager.UpdateAsync(user);
             string message = status == true ? "User Aktiv olundu" : "User Deaktiv olundu";
-            return Ok(new Response<object>(){ Message= "User Deaktiv olundu"});
+            if (status)
+            {
+                return Ok(new Response<object>() { Message = message });
+            }
+            return Ok(new Response<object>() { Message = message });
+
+
         }
 
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> AcceptUserTransaction(int id, bool accept)
+        [HttpPut("{transactionno}")]
+        public async Task<IActionResult> AcceptUserTransaction(string transactionno, bool accept)
         {
-            Transaction transaction = await _context.Transactions.FindAsync(id);
-            if (transaction == null) return NotFound(new Response<object> { Message = $"{id} nomreli transaction tapilmadi" });
+            Transaction transaction = _context.Transactions.Where(x => x.TransactionNo == transactionno).FirstOrDefault();
+            if (transaction == null) return NotFound(new Response<object> { Message = $"{transactionno} nomreli transaction tapilmadi" });
             if (accept)
             {
                 transaction.Status = true;
@@ -204,7 +225,7 @@ namespace Warehouse.Controllers
         [HttpGet]
         public IActionResult getInfo()
         {
-            Message message = new Message(new List<string>() { "buludlumoka@gmail.com"},"Test Email","hello",null);
+            Message message = new Message(new List<string>() { "buludlumoka@gmail.com" }, "Test Email", "hello", null);
             _emailSender.SendEmailAsync(message);
 
             return Ok();
