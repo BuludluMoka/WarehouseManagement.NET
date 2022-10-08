@@ -1,4 +1,4 @@
-﻿namespace Warehouse.Core.Helpers
+﻿namespace Warehouse.Core.Helpers.Wrappers
 {
     public class PaginationFilter
     {

@@ -7,9 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Warehouse.Core.Helpers;
+using Warehouse.Core.Helpers.Wrappers;
 using Warehouse.Core.Helpers.RequestParameters;
-using Warehouse.Core.RequestParameters;
 using Warehouse.Data.Dto;
 using Warehouse.Data.Dto.Products;
 using Warehouse.Data.Models;
@@ -32,13 +31,9 @@ namespace Warehouse.Controllers
 
         [HttpGet]
 
-        public IActionResult GetProducts([FromQuery] Pagination pagination)
+        public IActionResult GetProducts([FromQuery] PaginationFilter pFilter, string searchString, string sort)
         {
-            if (_context.Products == null)
-            {
-                return NotFound(new Response<object>() { Message = "Product tapilmadi" });
-            }
-            var totalProducts = _context.Products.Count();
+
             var products = (from a in _context.Products
                             select new
                             {
@@ -48,9 +43,43 @@ namespace Warehouse.Controllers
                                 a.sellPrice,
                                 Category = a.Category.Name,
                                 a.CreatedDate
-                            }).Skip((pagination.Page - 1) * (pagination.Size)).Take(pagination.Size);
+                            });
+            if (products == null)
+            {
+                return NotFound(new Response<object>() { Message = "Product yoxdur" });
+            }
 
-            return Ok(new Response<object>(new { totalProducts, products }));
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(x => x.Name.Contains(searchString));
+            }
+            switch (sort)
+            {
+                case "createdDate":
+                    products = products.OrderBy(x => x.CreatedDate);
+                    break;
+                case "createdDateDesc":
+                    products = products.OrderByDescending(x => x.CreatedDate);
+                    break;
+                case "buyPrice":
+                    products = products.OrderBy(x => x.buyPrice);
+                    break;
+                case "name":
+                    products = products.OrderBy(x => x.Name);
+                    break;
+
+                default:
+                    break;
+            }
+
+            int totalProducts = products.Count();
+
+            var returnedProducts = products
+                .Skip((pFilter.PageNumber - 1) * (pFilter.PageSize))
+                .Take(pFilter.PageSize)
+                .ToList();
+
+            return Ok(new PagedResponse<object>(returnedProducts, pFilter.PageNumber, pFilter.PageSize, totalProducts));
         }
 
         //[HttpGet]
@@ -124,7 +153,7 @@ namespace Warehouse.Controllers
                 CategoryId = newProduct.CategoryId
             };
 
-            return Ok(new Response<object>(returnedProducts) { Succeeded=true, Message = "Mehsul uğurla əlavə edildi!" });
+            return Ok(new Response<object>(returnedProducts) { Succeeded = true, Message = "Mehsul uğurla əlavə edildi!" });
         }
 
 
@@ -141,8 +170,8 @@ namespace Warehouse.Controllers
             await _context.SaveChangesAsync();
 
 
-            return Ok(new Response<object>(model) { Succeeded=true,  Message = "Məhsul yeniləndi", Data = model });
-            
+            return Ok(new Response<object>(model) { Succeeded = true, Message = "Məhsul yeniləndi", Data = model });
+
         }
 
 
@@ -163,7 +192,7 @@ namespace Warehouse.Controllers
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
 
-            return Ok(new Response<object>(){ Succeeded = true, Message = "Məhsul uğurla silindi" });
+            return Ok(new Response<object>() { Succeeded = true, Message = "Məhsul uğurla silindi" });
         }
 
         private bool ProductExists(int id)

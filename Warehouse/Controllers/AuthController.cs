@@ -12,7 +12,7 @@ using Warehouse.Data.Models;
 using Warehouse.Data.Models.Common.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Warehouse.Core.Services.EmailService;
-using Warehouse.Core.Helpers;
+using Warehouse.Core.Helpers.Wrappers;
 
 namespace Warehouse.Controllers
 {
@@ -85,6 +85,7 @@ namespace Warehouse.Controllers
                     return Ok(new
                     {
                         Role = userrol[0],
+                        WarehouseId = user.AnbarId,
                         token = new JwtSecurityTokenHandler().WriteToken(token),
                         expiration = token.ValidTo
                     }); 

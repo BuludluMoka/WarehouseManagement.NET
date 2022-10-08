@@ -8,9 +8,9 @@ namespace Warehouse.Core.Validator.TransactionValidate
     {
         public CreateAdminTransactionValidator()
         {
-            RuleFor(x => x.TransactionNo)
-                .NotEmpty()
-                .WithMessage("Xais edirik Transaction Nomresini bos kecmeyin");
+            //RuleFor(x => x.TransactionNo)
+            //    .NotEmpty()
+            //    .WithMessage("Xais edirik Transaction Nomresini bos kecmeyin");
 
             RuleFor(t => t.receiver_id)
                 .NotEmpty()

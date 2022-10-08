@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Warehouse.Core.Helpers;
+using Warehouse.Core.Helpers.Wrappers;
 using Warehouse.Data.Dto;
 using Warehouse.Data.Dto.Ambar;
 using Warehouse.Data.Models;
@@ -73,77 +73,54 @@ namespace Warehouse.Controllers
             //return CreatedAtAction("PostWarehouse", new { id = newAmbar.Id }, anbar);
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetWarehouseById(int id)
-        //{
-            //List<AppUser> WarehouseUsers = _userManager.Users.Include(x=>x.Anbar).Where(x=>x.AnbarId == 2).ToList();
-            //if (_context.Users == null)
-            //{
-            //    //return NotFound();
-            //}
-            //var a = _context.Transactions.
-            //    Select(x => new Transaction
-            //    {
-            //        Id = x.Id,
-            //        Product = x.Product,
-            //        Receiver = x.Receiver,
-            //        User = x.User
-                   
-                    
-            //    }).FirstOrDefault().;
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetWarehouseById(int id)
+        {
 
-            //.Select(n => new Questionnaire
-            //{
-            //    Id = n.Id,
-            //    Name = n.Name,
-            //    Questions = n.Questions.Select(q => new Question
-            //    {
-            //        Id = q.Id,
-            //        Text = q.Text,
-            //        Answers = q.Where(a => a.UserId == userId).ToList()
-            //    }).ToList()
-            //})
+            var notfound = _context.Anbars.Any(x => x.Id == id);
+            if (!notfound) return NotFound(new Response<object> { Message = "Bele bir Anbar Tapılmadı" });
+            
+            List<AppUser> WarehouseUsers = await _userManager.Users.IgnoreQueryFilters().Include(x => x.Anbar).Where(x => x.AnbarId == id).ToListAsync();
 
-            //var data = from x in a
-            //           select new
-            //           {
-            //               x.Id,
-            //               ProductName =  new List<Product> { x.Product }
-            //           };
+            var ProductsOutWarehouse = (from t in _context.Transactions
+                                        where t.sender_id == id
+                                        group t by t.Product.Name into g
+                                        select new
+                                        {
+                                            Id = g.Select(x => x.ProductId).FirstOrDefault(),
+                                            Name = g.Key,
+                                            Count = g.Sum(a => a.Count)
+                                        }).ToList();
 
-            //return Ok(a);
-            //var inProduct = (from x in _context.Transactions
-
-            //                 select x).ToList();
-
-            //object returnedInfo = new
-            //{
-            //    Users = WarehouseUsers.Select(x => x.Email).ToList(),
-            //    Warehouse = _context.Anbars.FirstOrDefault(x=>x.Id == 2)
-            //};
-
-            //int outProduct = (from t in _context.Transactions
-            //                  where t.ProductId == model.ProductId && t.sender_id == model.sender_id && t.Status != false
-            //                  select t).Sum(x => x.Count);
-
-            //var reletions = from x in _context.Transactions
-            //                 where x
-            //                 where 
+            var ProductsInWarehouse = (from t in _context.Transactions
+                                       where t.receiver_id == id
+                                       group t by t.Product.Name into g
+                                       select new
+                                       {
+                                           Id = g.Select(x => x.ProductId).FirstOrDefault(),
+                                           Name = g.Key,
+                                           Count = g.Sum(a => a.Count) 
+                                       }).ToList();
 
 
-            //if (anbar.Count == 0)
-            //{
-            //    return NotFound();
-            //}
+            if (ProductsInWarehouse == null) return NotFound(new Response<object>() { Message = "Tapılmadı" });
 
+            object returnType = new
+            {
+                id = WarehouseUsers.Select(x => x.AnbarId).FirstOrDefault(),
+                Warehouse = WarehouseUsers.Select(x => x.Anbar.Name).FirstOrDefault(),
+                Place = WarehouseUsers.Select(x => x.Anbar.Place).FirstOrDefault(),
+                Phone = WarehouseUsers.Select(x => x.PhoneNumber).FirstOrDefault(),
+                CreatedDate = _context.Anbars.Find(id).CreatedDate.ToString("yyyy-MM-dd : HH-mm-ss"),
+                Users = WarehouseUsers.Where(x => x.Id != "a18be9c0-aa65-4af8-bd17-00bd9344e575").Select(x => new { x.Id,x.UserName, x.PhoneNumber, x.Address, x.Email, x.Status, }),
+                Products = ProductsInWarehouse.Select(x => new {
+                    x.Id, x.Name, Miqdar = x.Id == ProductsOutWarehouse.Select(x=>x.Id).FirstOrDefault()? x.Count - ProductsOutWarehouse.Select(x=>x.Count).FirstOrDefault(): x.Count
+                })
 
+            };
+            return Ok(new Response<object>(returnType));
 
-            //return JsonConvert.SerializeObject(a, Formatting.Indented,
-            //            new JsonSerializerSettings()
-            //            {
-            //                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            //            });
-        //}
+        }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
