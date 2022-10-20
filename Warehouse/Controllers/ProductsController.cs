@@ -46,7 +46,7 @@ namespace Warehouse.Controllers
                             });
             if (products == null)
             {
-                return NotFound(new Response<object>() { Message = "Product yoxdur" });
+                return NotFound(new Response<object>() { Message = "Product tapılmadı" });
             }
 
             if (!string.IsNullOrEmpty(searchString))

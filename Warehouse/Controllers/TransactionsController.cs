@@ -123,7 +123,7 @@ namespace Warehouse.Controllers
             if (!isProductExist) return BadRequest( new Response<object> { Message= "Anbarda bu mehsuldan yoxdur" });
             if (!isSenderExist && model.sender_id != null) return NotFound(new Response<object> { Message = "Mehsulu gonderen anbar Tapilmadi" });
             if (!isReceiverExist) return NotFound(new Response<object> { Message= "Mehsulu qebul eden anbar tapilmadi" });
-            //if (isTransactionNoExist) return BadRequest(new Response<object> { Message = "Transaction Nomresi movcuddur" });
+            
 
             Transaction newTransaction = _mapper.Map<Transaction>(model);
             newTransaction.UserId = (await _userManager.GetUserAsync(HttpContext.User)).Id;
@@ -162,33 +162,11 @@ namespace Warehouse.Controllers
             };
 
             return Ok(new Response<object>(returnedTransaction) { Message = "Mehsul gonderildi"});
-            //return SentMessage($"Mehsul gonderildi", true, model);
 
         }
 
-        [NonAction]
-        private bool TransactionsExists(int id)
-        {
-            return (_context.Transactions?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
-        [NonAction]
-        private ObjectResult SentMessage(string msj, bool isSucces, object model = null)
-        {
-            if (isSucces == true)
-            {
-                return Ok(new
-                {
-                    Transaction = model,
-                    succes = isSucces,
-                    message = msj
-                });
-            }
-            return BadRequest(new
-            {
-                success = isSucces,
-                message = msj
-            });
-        }
+       
+       
     }
 }
 
