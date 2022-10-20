@@ -12,6 +12,7 @@ using Warehouse.Data.Models;
 using Warehouse.Data.Models.Common.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Warehouse.Core.Services.EmailService;
+using Warehouse.Core.Helpers.Wrappers;
 
 namespace Warehouse.Controllers
 {
@@ -84,6 +85,7 @@ namespace Warehouse.Controllers
                     return Ok(new
                     {
                         Role = userrol[0],
+                        WarehouseId = user.AnbarId,
                         token = new JwtSecurityTokenHandler().WriteToken(token),
                         expiration = token.ValidTo
                     }); 
@@ -95,31 +97,33 @@ namespace Warehouse.Controllers
             }
             return BadRequest(ModelState);
         }
+     
 
         [HttpPut]
         [Authorize(Roles = "Admin,User")]
-        public async Task<IActionResult> ChangePassword([FromForm] UserUpdateDto model)
+        public async Task<IActionResult> ChangePassword(string OldPassword , string NewPassword)
         {
             //AppUser currentUser = HttpContext.User.Identity as AppUser;
             AppUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
             //var a = _userManager
 
-            var checkPass = await _userManager.CheckPasswordAsync(currentUser, model.OldPassword);
-            if (!checkPass) return BadRequest(new { ErrorMessage = "Girdiyiniz parol yanlisdir" });
+            var checkPass = await _userManager.CheckPasswordAsync(currentUser, OldPassword);
+            if (!checkPass) return BadRequest(new Response<object> { Message = "Girdiyiniz parol yanlisdir" });
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(currentUser);
 
 
-            var result = await _userManager.ResetPasswordAsync(currentUser, token, model.NewPassword);
+            var result = await _userManager.ResetPasswordAsync(currentUser, token, NewPassword);
             if (result.Succeeded)
             {
-                return Ok(new { SuccessMessage = "Parol guncellendi" });
+                return Ok(new Response<object>() { Message= "Parol guncellendi" });
             }
-            return BadRequest();
+            return BadRequest(new Response<object>() { Succeeded= false, Message= "Parol yenilenerken bir xeta yarandi"});
         }
 
         [HttpPost]
-        public async Task<IActionResult> ForgetPassword([FromForm] string email)
+        [Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> ForgetPassword( string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null) return BadRequest(new { ErrorMessage = "Bele bir isdifadeci tapilmadi" });
@@ -135,15 +139,16 @@ namespace Warehouse.Controllers
 
                 "Warehouse Parolunu Sifirla",
 
-                $"https://localhost:7199/api/Auth/ResetPasswordConfirmation?token={user.ResetPassword}&&email={email}",
+                $"http://karfree-001-site1.atempurl.com/api/Auth/ResetPasswordConfirmation?token={user.ResetPassword}&&email={email}",
 
                 null);
 
             await _emailSender.SendEmailAsync(message);
-            return Ok(new { SuccessMessage = "Növbəti addımlar üçün gələnlər qutusunu yoxlayın. Əgər Mail almamısınızsa və o spam qovluğunuzda deyilsə, bu başqa ünvanla qeydiyyatdan keçdiyiniz anlamına gələ bilər.." });
+            return Ok(new Response<object>() { Message = "Növbəti addımlar üçün gələnlər qutusunu yoxlayın. Əgər Mail almamısınızsa və o spam qovluğunuzda deyilsə, bu başqa ünvanla qeydiyyatdan keçdiyiniz anlamına gələ bilər.." });
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> ResetPasswordConfirmation([FromQuery] string token, string email, [FromQuery] string? newPassword, string? PasswordConfirmation)
         {
             AppUser user = await _userManager.FindByEmailAsync(email);

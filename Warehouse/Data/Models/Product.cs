@@ -6,6 +6,10 @@ namespace Warehouse.Data.Models
 {
     public class Product : BaseEntity
     {
+        public Product()
+        {
+            Transactions = new List<Transaction>();
+        }
 
         [Required]
         public string Name { get; set; }

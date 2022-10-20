@@ -133,6 +133,7 @@ namespace Warehouse.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
+
             if (_context.Categories == null)
             {
                 return NotFound();
