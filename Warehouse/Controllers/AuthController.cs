@@ -62,7 +62,7 @@ namespace Warehouse.Controllers
                     //};
                     var claims = new List<Claim>
                     {
-                        new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                        new Claim(JwtRegisteredClaimNames.Sid, user.Id),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                     };
 
