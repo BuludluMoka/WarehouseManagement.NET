@@ -8,11 +8,11 @@ namespace Warehouse.Core.Validator.TransactionValidate
     {
         public CreateTransactionValidator()
         {
-            RuleFor(x => x.TransactionNo)
-                .NotEmpty()
-                .WithMessage("Xais edirik Transaction Nomresini bos kecmeyin")
-                .NotNull()
-                .WithMessage("Xais edirik TransactionNOmresini bos kecmeyin");
+            //RuleFor(x => x.TransactionNo)
+            //    .NotEmpty()
+            //    .WithMessage("Xais edirik Transaction Nomresini bos kecmeyin")
+            //    .NotNull()
+            //    .WithMessage("Xais edirik TransactionNOmresini bos kecmeyin");
             RuleFor(t => t.Receiver)
                 .NotEmpty().When(t => t.Sender == true)
                 .WithMessage("Xais edirik gonderilen anbari bos kecmeyin.")

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Warehouse.Core.RequestParameters;
+using Warehouse.Core.Helpers.Wrappers;
 using Warehouse.Data.Dto;
 using Warehouse.Data.Dto.Transactions;
 using Warehouse.Data.Models;
@@ -19,7 +19,7 @@ namespace Warehouse.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class TransactionsController : ControllerBase
     {
         private readonly WarehouseDbContext _context;
@@ -34,23 +34,48 @@ namespace Warehouse.Controllers
         }
 
         [HttpGet]
-        public  ActionResult GetTransactions([FromQuery] Pagination pagination)
+        public  ActionResult GetTransactions([FromQuery] PaginationFilter pFilter, string searchString, string sort)
         {
-            if (_context.Transactions == null)
-            {
-                return NotFound();
-            }
             var totalTransaction = _context.Transactions.Count();
             var transactions = (from x in _context.Transactions
                                 select new
                                 {
+                                    x.Id,
                                     Sender = x.Sender.Name,
                                     Receiver = x.Receiver.Name,
                                     Mehsul = x.Product.Name,
-                                    Miqdar = x.Count
-                                }).Skip((pagination.Page - 1) * (pagination.Size)).Take(pagination.Size);
+                                    Miqdar = x.Count,
+                                    CreatedDate = x.CreatedDate
+                                });
 
-            return Ok(new { totalTransaction, transactions});
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                transactions = transactions.Where(x => x.Sender.Contains(searchString) || x.Mehsul.Contains(searchString) || x.Receiver.Contains(searchString));
+            }
+            switch (sort)
+            {
+                case "createdDate":
+                    transactions = transactions.OrderBy(x => x.CreatedDate);
+                    break;
+                case "createdDateDesc":
+                    transactions = transactions.OrderByDescending(x => x.CreatedDate);
+                    break;
+                case "sender":
+                    transactions = transactions.OrderBy(x => x.Sender);
+                    break;
+                case "receiver":
+                    transactions = transactions.OrderBy(x => x.Receiver);
+                    break;
+                case "productCount":
+                    transactions = transactions.OrderBy(x => x.Miqdar);
+                    break;
+                default:
+                    break;
+            }
+
+            var returnedTransaction = transactions.Skip((pFilter.PageNumber - 1) * (pFilter.PageSize)).Take(pFilter.PageSize);
+            
+            return Ok(new PagedResponse<object>(returnedTransaction, pFilter.PageNumber, pFilter.PageSize, totalTransaction));
         }
 
         [HttpGet("{id}")]
@@ -64,6 +89,7 @@ namespace Warehouse.Controllers
                                       where x.Id == id
                                       select new
                                       {
+                                          x.Id,
                                           x.sender_id,
                                           x.receiver_id,
                                           x.ProductId,
@@ -81,11 +107,10 @@ namespace Warehouse.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost, Route("PostTransaction")]
-        public async Task<ActionResult<Transaction>> PostTransaction( AdminTransactionCreateDto model)
+        public async Task<ActionResult> PostTransaction( AdminTransactionCreateDto model)
         {
 
-
-            bool isTransactionNoExist = _context.Transactions.Any(x => x.TransactionNo == model.TransactionNo);
+            //bool isTransactionNoExist = _context.Transactions.Any(x => x.TransactionNo == model.TransactionNo);
             model.sender_id = model.sender_id == 0 ? null : model.sender_id;
 
             bool isProductExist = _context.Products.Any(x => x.Id == model.ProductId);
@@ -94,29 +119,31 @@ namespace Warehouse.Controllers
 
 
                 
-            if (model.sender_id == model.receiver_id) { return SentMessage("Eyni anbarlar arasi gonderim ede bilmezsiniz", false); }
-            if (!isProductExist) { return SentMessage("Anbarda bu mehsuldan yoxdur", false); }
-            if (!isSenderExist && model.sender_id != null) { return SentMessage("Mehsulu gonderen anbar Tapilmadi", false); }
-            if (!isReceiverExist) { return SentMessage("Mehsulu qebul eden anbar tapilmadi", false); }
-            if (isTransactionNoExist) return BadRequest(new { ErrorMessage = "Transaction Nomresi movcuddur" });
+            if (model.sender_id == model.receiver_id)  return BadRequest( new Response<object> { Message = "Eyni anbarlar arasi gonderim ede bilmezsiniz" });
+            if (!isProductExist) return BadRequest( new Response<object> { Message= "Anbarda bu mehsuldan yoxdur" });
+            if (!isSenderExist && model.sender_id != null) return NotFound(new Response<object> { Message = "Mehsulu gonderen anbar Tapilmadi" });
+            if (!isReceiverExist) return NotFound(new Response<object> { Message= "Mehsulu qebul eden anbar tapilmadi" });
+            
 
             Transaction newTransaction = _mapper.Map<Transaction>(model);
             newTransaction.UserId = (await _userManager.GetUserAsync(HttpContext.User)).Id;
+            newTransaction.TransactionNo = Guid.NewGuid().ToString();
 
 
             if (isSenderExist)
             {
                 int inProduct = (from t in _context.Transactions
-                                 where t.ProductId == model.ProductId && t.receiver_id == model.sender_id && t.Status != false
+                                 where t.ProductId == model.ProductId && t.receiver_id == model.sender_id
                                  select t).Sum(x => x.Count);
 
                 int outProduct = (from t in _context.Transactions
-                                  where t.ProductId == model.ProductId && t.sender_id == model.sender_id && t.Status != false
+                                  where t.ProductId == model.ProductId && t.sender_id == model.sender_id 
                                   select t).Sum(x => x.Count);
 
                 if (inProduct - outProduct < model.Count)
                 {
-                    return SentMessage("Anbarda kifayet qeder mehsul yoxdur", false);
+                    return NotFound(new Response<object>() { Message = "Anbarda kifayet qeder mehsul yoxdur" });
+                    
                 }
 
                 _context.Transactions.Add(newTransaction);
@@ -124,33 +151,22 @@ namespace Warehouse.Controllers
             _context.Transactions.Add(newTransaction);
             await _context.SaveChangesAsync();
 
-            return SentMessage($"Mehsul gonderildi", true, model);
+            object returnedTransaction = new
+            {
+                Id = newTransaction.Id,
+                TransactionNo = newTransaction.TransactionNo,
+                Sender = newTransaction.sender_id,
+                Receiver = newTransaction.receiver_id,
+                Mehsul = newTransaction.ProductId,
+                Miqdar = newTransaction.Count
+            };
+
+            return Ok(new Response<object>(returnedTransaction) { Message = "Mehsul gonderildi"});
 
         }
 
-        [NonAction]
-        private bool TransactionsExists(int id)
-        {
-            return (_context.Transactions?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
-        [NonAction]
-        private ObjectResult SentMessage(string msj, bool isSucces, object model = null)
-        {
-            if (isSucces == true)
-            {
-                return Ok(new
-                {
-                    Transaction = model,
-                    succes = isSucces,
-                    message = msj
-                });
-            }
-            return BadRequest(new
-            {
-                success = isSucces,
-                message = msj
-            });
-        }
+       
+       
     }
 }
 
